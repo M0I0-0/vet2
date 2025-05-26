@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Categorias</title>
+    <link rel="stylesheet" href="../Style/read.css">
+    <link rel="stylesheet" href="../Style/menu.css">
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="categorias_create.html" class="fghjkl">Agregar categoria</a>
+            <input type="text" class="busqueda" id="searchInput" onkeyup="buscarCategorias()"
+                placeholder="Buscar por nombre...">
+        </div>
+
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../usuarios/usuarios_read.html">Usuarios</a>
+                    <a href="../inventario/inventario_read.html">Inventario</a>
+                    <a href="../proveedores/proveedores_read.html">Proveedores</a>
+                    <a href="../clientes/clientes_read.html">Clientes</a>
+                    <a href="../citas/citas_read.html">Citas</a>
+                    <a href="../categorias/categorias_read.html">Categorias</a>
+                    <a href="../ventas/ventas_read.html">Ventas</a>
+                    <a href="../historiales/historiales_read.html">Historiales</a>
+                    <a href="../mascotas/mascotas_read.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+
+
+        <h2>Lista de categorias</h2>
+        <div class="input-container">
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="categoriasTabla">
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="../admin.html" class="menu-principal">Menu</a>
+        </div>
+
+        <script>
+            let categorias = []; 
+
+            function cargarcategorias() {
+                fetch('categorias_read.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        categorias = data; // Guardamos los datos en el array
+                        mostrarcategorias(categorias); // Llamamos a la función que muestra los categorias
+                    })
+                    .catch(error => console.error("Error al cargar los categorias:", error));
+            }
+
+            function mostrarcategorias(data) {
+                const tabla = document.getElementById('categoriasTabla');
+                tabla.innerHTML = '';
+                data.forEach(categoria => {
+                    const fila = document.createElement('tr');
+
+                    fila.innerHTML = `
+                            <td>${categoria.id_categoria}</td>
+                            <td>${categoria.nombre}</td>
+                            <td>${categoria.descripcion}</td>
+                            <td>
+                                <a href="categorias_update.html?id=${categoria.id_categoria}"class="fghjkl">Editar</a>
+                                <a href="categorias_delete.php?id=${categoria.id_categoria}" onclick="return confirm('¿Seguro que deseas eliminar esta categoria?')"class="fghjkl">Eliminar</a>
+                            </td>
+                        `;
+                    tabla.appendChild(fila);
+                });
+            }
+
+            // Función para filtrar los categorias según el término de búsqueda
+            function buscarCategorias() {
+                const input = document.getElementById('searchInput');
+                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
+                const resultados = categorias.filter(categoria => {
+                    return categoria.nombre.toLowerCase().includes(filtro);
+                });
+                mostrarcategorias(resultados); // Mostramos los categorias filtrados
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarcategorias);
+        </script>
+        <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

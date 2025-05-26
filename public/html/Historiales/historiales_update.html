@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar historial</title>
+    <link rel="stylesheet" href="../Style/form.css">
+
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Editar historial</h1>
+        <form action="historiales_update.php" method="post">
+            <input type="hidden" name="id_historial" id="historial_id">
+
+            <div class="input-container">
+                <label>Mascota:</label>
+                <select name="mascota" id="mascotaSelect" required>
+                    <option value="">Selecciona una mascota</option>
+                </select><br>
+
+                <label>Fecha:</label>
+                <input type="date" name="fecha" id="historial_fecha" required><br>
+
+                <label>Descripcion:</label>
+                <input type="text" name="descripcion" id="historial_descripcion" required><br>
+
+                <label>Tratamiento:</label>
+                <input type="text" name="tratamiento" id="historial_tratamiento" required><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="historiales_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const historialID = params.get('id');
+
+        if (historialID) {
+            fetch('../obtencion//historiales_obtener.php?id=' + historialID)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data); // Verifica en la consola
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('historial_id').value = data.id_historial;
+                        document.getElementById('historial_fecha').value = data.fecha;
+                        document.getElementById('historial_descripcion').value = data.descripcion;
+                        document.getElementById('historial_tratamiento').value = data.tratamiento;
+                        cargarMascotas(data.id_mascota);
+                    }
+                })
+                .catch(error => console.error("Error al obtener datos de la historial:", error));
+        } else {
+            alert("ID de historial no proporcionado.");
+        }
+
+        function cargarMascotas(selectedMascota) {
+            fetch('../obtencion/mascotas2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos de mascotas:", data);  // Verifica los datos que obtienes
+
+                    const select = document.getElementById('mascotaSelect');
+
+                    // Limpia las opciones previas
+                    select.innerHTML = '';
+
+                    // Crea las nuevas opciones para veterinarios
+                    data.forEach(mascota => {
+                        const option = document.createElement('option');
+                        option.value = mascota.id_mascota;
+                        option.textContent = mascota.nombre;
+                        select.appendChild(option);
+                    });
+
+                    // Selecciona el veterinario correcto sin necesidad de setTimeout
+                    if (selectedMascota) {
+                        select.value = selectedMascota; // Selecciona el valor
+                    } else {
+                        console.log("No se ha proporcionado un ID de mascota válido.");
+                    }
+                })
+                .catch(error => console.error("Error al cargar mascotas:", error));
+        }
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

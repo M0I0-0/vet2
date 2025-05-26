@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo historial</title>
+    <link rel="stylesheet" href="../Style/form.css">
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Nuevo historial</h1>
+        <form action="historiales_create.php" method="post">
+
+            <div class="input-container">
+                <label>Mascota:</label>
+                <select name="mascota" id="mascotaSelect" required>
+                    <option value="">Selecciona una mascota</option>
+                </select><br>
+
+                <label>Fecha:</label>
+                <input type="date" name="fecha" required><br>
+
+                <label>Descripcion:</label>
+                <input type="text" name="descripcion" required><br>
+
+                <label>Tratamiento:</label>
+                <input type="text" name="tratamiento" required><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="historiales_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function cargarMascotas() {
+            fetch('../obtencion/mascotas2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('mascotaSelect');
+                    data.forEach(mascota => {
+                        const option = document.createElement('option');
+                        option.value = mascota.id_mascota;
+                        option.textContent = mascota.nombre;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar mascotas:", error));
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarMascotas();
+        });
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

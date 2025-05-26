@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo proveedor</title>
+    <link rel="stylesheet" href="../Style/form.css">
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Nuevo proveedor</h1>
+        <form action="proveedores_create.php" method="post">
+            <div class="input-container">
+
+                <label>Nombre:</label>
+                <input type="text" name="nombre" required><br>
+
+                <label>Contacto:</label>
+                <input type="text" name="contacto" required><br>
+
+                <label>Telefono:</label>
+                <input type="text" name="telefono" required><br>
+
+                <label>Correo:</label>
+                <input type="email" name="correo" required><br>
+
+                <label>Direccion:</label>
+                <input type="text" name="direccion" required><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="proveedores_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

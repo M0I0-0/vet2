@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar mascota</title>
+    <link rel="stylesheet" href="../Style/form.css">
+
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Editar mascota</h1>
+        <form action="mascotas_update.php" method="post">
+            <input type="hidden" name="id_mascota" id="mascota_id">
+
+            <div class="input-container">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" id="mascota_nombre" required><br>
+
+                <label>Especie:</label>
+                <input type="text" name="especie" id="mascota_especie" required><br>
+
+                <label>Raza:</label>
+                <input type="text" name="raza" id="mascota_raza" required><br>
+
+                <label>Edad:</label>
+                <input type="text" name="edad" id="mascota_edad" required><br>
+
+                <label>Peso:</label>
+                <input type="text" name="peso" id="mascota_peso" required><br>
+
+                <label>Cliente:</label>
+                <select name="cliente" id="clienteSelect" required>
+                    <option value="">Selecciona un cliente</option>
+                </select><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="mascotas_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const mascotaID = params.get('id');
+
+        if (mascotaID) {
+            fetch('../obtencion//mascotas_obtener.php?id=' + mascotaID)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data); // Verifica en la consola
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('mascota_id').value = data.id_mascota;
+                        document.getElementById('mascota_nombre').value = data.nombre;
+                        document.getElementById('mascota_especie').value = data.especie;
+                        document.getElementById('mascota_raza').value = data.raza;
+                        document.getElementById('mascota_edad').value = data.edad;
+                        document.getElementById('mascota_peso').value = data.peso;
+                        document.getElementById('clienteSelect').value = data.id_cliente;
+
+                        cargarClientes(data.id_cliente);
+
+                    }
+                })
+                .catch(error => console.error("Error al obtener datos de la mascota:", error));
+        } else {
+            alert("ID de mascota no proporcionado.");
+        }
+
+
+        // Cargar los clientes
+        function cargarClientes(selectedCliente) {
+            fetch('../obtencion/clientes2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos de clientes:", data);  // Verifica los datos que obtienes
+
+                    const select = document.getElementById('clienteSelect');
+
+                    // Limpia las opciones previas
+                    select.innerHTML = '';
+
+                    // Crea las nuevas opciones para clientes
+                    data.forEach(cliente => {
+                        const option = document.createElement('option');
+                        option.value = cliente.id_cliente;
+                        option.textContent = cliente.nombre;
+                        select.appendChild(option);
+                    });
+
+                    // Selecciona el cliente correcto sin necesidad de setTimeout
+                    if (selectedCliente) {
+                        select.value = selectedCliente; // Selecciona el valor
+                    } else {
+                        console.log("No se ha proporcionado un ID de cliente válido.");
+                    }
+                })
+                .catch(error => console.error("Error al cargar clientes:", error));
+        }
+
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

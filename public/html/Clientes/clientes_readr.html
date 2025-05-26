@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="../Style/read.css">
+    <link rel="stylesheet" href="../Style/menu.css" />
+
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="clientes_creater.html" class="fghjkl">Agregar cliente</a>
+            <input type="text" class="busqueda" id="searchClientes" placeholder="Buscar por nombre..."
+                onkeyup="buscarClientes()">
+        </div>
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../inventario/inventario_readr.html">Inventario</a>
+                <a href="../clientes/clientes_readr.html">Clientes</a>
+                <a href="../citas/citas_readr.html">Citas</a>
+                <a href="../historiales/historiales_readr.html">Historiales</a>
+                <a href="../mascotas/mascotas_readr.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+
+        <h2>Lista de Clientes</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Direccion</th>
+                    </tr>
+                </thead>
+                <tbody id="clientesTabla">
+                </tbody>
+            </table>
+            <tbody id="inventarioTabla">
+            </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="../recp.html " class="menu-principal">Menu</a>
+        </div>
+        <script>
+            function cargarClientes() {
+                fetch('clientes_read.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tabla = document.getElementById('clientesTabla');
+                        tabla.innerHTML = '';
+                        data.forEach(cliente => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
+                            <td>${cliente.id_cliente}</td>
+                            <td>${cliente.nombre}</td>
+                            <td>${cliente.correo}</td>
+                            <td>${cliente.telefono}</td>
+                            <td>${cliente.direccion}</td>
+                        `;
+                            tabla.appendChild(fila);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar los clientes:", error));
+            }
+
+            function buscarClientes() {
+                let filtro = document.getElementById("searchClientes").value.toLowerCase();
+                let filas = document.getElementById("clientesTabla").getElementsByTagName("tr");
+
+                Array.from(filas).forEach(fila => {
+                    let nombre = fila.cells[1]?.textContent.toLowerCase();
+                    if (nombre && nombre.includes(filtro)) {
+                        fila.style.display = "";
+                    } else {
+                        fila.style.display = "none";
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarClientes);
+        </script>
+        <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

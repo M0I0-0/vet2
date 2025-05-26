@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva categoria</title>
+    <link rel="stylesheet" href="../Style/form.css">
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Nueva categoria</h1>
+        <form action="categorias_create.php" method="post">
+
+            <div class="input-container">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" required><br>
+
+                <label>Descripcion:</label>
+                <input type="text" name="descripcion" required><br>
+            </div>
+
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="categorias_read.html">Regresar</a>
+            </div>
+
+        </form>
+    </div>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

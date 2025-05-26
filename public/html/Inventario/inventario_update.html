@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar producto</title>
+    <link rel="stylesheet" href="../Style/form.css">
+
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Editar producto</h1>
+        <form action="inventario_update.php" method="post">
+            <input type="hidden" name="id_inventario" id="inventario_id">
+
+            <div class="input-container">
+                <label>Categoría:</label>
+                <select name="categoria_id" id="categoriaSelect" required>
+                    <option value="">Selecciona una categoría</option>
+                </select><br>
+
+                <label>Nombre:</label>
+                <input type="text" name="nombre_producto" id="nombre_id" required><br>
+
+                <label>Cantidad:</label>
+                <input type="text" name="cantidad" id="cantidad_id" required><br>
+
+                <label>Descripción:</label>
+                <input type="text" name="descripcion" id="descripcion_id"><br>
+
+                <label>Stock mínimo:</label>
+                <input type="text" name="stock_minimo" id="stock_id" required><br>
+
+                <label>Precio:</label>
+                <input type="text" name="precio_unitario" id="precio_id" placeholder="$" required><br>
+
+                <label>Fecha de registro:</label>
+                <input type="date" name="fecha_registro" id="registro_id" required><br>
+
+                <label>Fecha de vencimiento:</label>
+                <input type="date" name="fecha_vencimiento" id="vencimiento_id"><br>
+
+                <label>Proveedor:</label>
+                <select name="proveedor_id" id="proveedorSelect">
+                    <option value="">Selecciona un proveedor</option>
+                </select><br>
+
+                <label>Notas:</label>
+                <input type="text" name="notas" id="notas_id" /><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="inventario_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const inventarioID = params.get('id');
+
+        if (inventarioID) {
+            fetch('../obtencion//inventario_obtener.php?id=' + inventarioID)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data); // Verifica en la consola
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('inventario_id').value = data.id_inventario;
+                        document.getElementById('categoriaSelect').value = data.categoria_id;
+                        document.getElementById('nombre_id').value = data.nombre_producto;
+                        document.getElementById('cantidad_id').value = data.cantidad;
+                        document.getElementById('descripcion_id').value = data.descripcion;
+                        document.getElementById('stock_id').value = data.stock_minimo;
+                        document.getElementById('precio_id').value = data.precio_unitario;
+                        document.getElementById('registro_id').value = data.fecha_registro;
+                        document.getElementById('vencimiento_id').value = data.fecha_vencimiento;
+                        document.getElementById('proveedorSelect').value = data.proveedor_id;
+                        document.getElementById('notas_id').value = data.notas;
+                        cargarCategorias(data.id_categoria);
+                        cargarProveedores(data.id_proveedor);
+
+                    }
+                })
+                .catch(error => console.error("Error al obtener datos de la inventario:", error));
+        } else {
+            alert("ID de inventario no proporcionado.");
+        }
+
+        function cargarCategorias(selectedCategoria) {
+            fetch('../obtencion/categorias2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos de categorias:", data);  // Verifica los datos que obtienes
+
+                    const select = document.getElementById('categoriaSelect');
+
+                    // Limpia las opciones previas
+                    select.innerHTML = '';
+
+                    // Crea las nuevas opciones para Inventario
+                    data.forEach(categoria => {
+                        const option = document.createElement('option');
+                        option.value = categoria.id_categoria;
+                        option.textContent = categoria.nombre;
+                        select.appendChild(option);
+                    });
+
+                    // Selecciona el Inventario correcto sin necesidad de setTimeout
+                    if (selectedCategoria) {
+                        select.value = selectedCategoria; // Selecciona el valor
+                    } else {
+                        console.log("No se ha proporcionado un ID de categoria válido.");
+                    }
+                })
+                .catch(error => console.error("Error al cargar categorias:", error));
+        }
+
+        // Cargar los proveedor
+        function cargarProveedores(selectedProveedor) {
+            fetch('../obtencion/proveedores2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos de proveedor:", data);  // Verifica los datos que obtienes
+
+                    const select = document.getElementById('proveedorSelect');
+
+                    // Limpia las opciones previas
+                    select.innerHTML = '';
+
+                    // Crea las nuevas opciones para proveedor
+                    data.forEach(proveedor => {
+                        const option = document.createElement('option');
+                        option.value = proveedor.id_proveedor;
+                        option.textContent = proveedor.nombre;
+                        select.appendChild(option);
+                    });
+
+                    // Selecciona el proveedor correcto sin necesidad de setTimeout
+                    if (selectedproveedor) {
+                        select.value = selectedproveedor; // Selecciona el valor
+                    } else {
+                        console.log("No se ha proporcionado un ID de proveedor válido.");
+                    }
+                })
+                .catch(error => console.error("Error al cargar proveedor:", error));
+        }
+
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

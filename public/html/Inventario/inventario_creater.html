@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo producto</title>
+    <link rel="stylesheet" href="../Style/form.css">
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Nuevo producto</h1>
+        <form action="inventario_create.php" method="post">
+
+            <div class="input-container">
+                <label>Categoría:</label>
+                <select name="categoria_id" id="categoriaSelect" required>
+                    <option value="">Selecciona una categoría</option>
+                </select><br>
+
+                <label>Nombre:</label>
+                <input type="text" name="nombre_producto" required><br>
+
+                <label>Cantidad:</label>
+                <input type="text" name="cantidad" required><br>
+
+                <label>Descripción:</label>
+                <input type="text" name="descripcion"><br>
+
+                <label>Stock mínimo:</label>
+                <input type="text" name="stock_minimo" required><br>
+
+                <label>Precio:</label>
+                <input type="text" name="precio_unitario" placeholder="$" required><br>
+
+                <label>Fecha de registro:</label>
+                <input type="date" name="fecha_registro" required><br>
+
+                <label>Fecha de vencimiento:</label>
+                <input type="date" name="fecha_vencimiento"><br>
+
+                <label>Proveedor:</label>
+                <select name="proveedor_id" id="proveedorSelect">
+                    <option value="">Selecciona un proveedor</option>
+                </select><br>
+
+                <label>Notas:</label>
+                <input type="text" name="notas" /><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="inventario_readr.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        function cargarCategoria() {
+            fetch('../obtencion/categorias2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('categoriaSelect');
+                    data.forEach(categoria => {
+                        const option = document.createElement('option');
+                        option.value = categoria.id_categoria;
+                        option.textContent = categoria.nombre;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar categoria:", error));
+        }
+
+        function cargarProveedores() {
+            fetch('../obtencion/proveedores2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('proveedorSelect');
+                    data.forEach(proveedor => {
+                        const option = document.createElement('option');
+                        option.value = proveedor.id_proveedor;
+                        option.textContent = proveedor.nombre;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar proveedor:", error));
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarCategoria();
+            cargarProveedores();
+        });
+
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

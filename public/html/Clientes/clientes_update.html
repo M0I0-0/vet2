@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Cliente</title>
+    <link rel="stylesheet" href="../Style/form.css">
+
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Editar Cliente</h1>
+        <form action="clientes_update.php" method="post">
+            <input type="hidden" name="id_cliente" id="cliente_id">
+
+            <div class="input-container">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" id="cliente_nombre" required><br>
+
+                <label>Teléfono:</label>
+                <input type="text" name="telefono" id="cliente_telefono" required><br>
+
+                <label>Correo:</label>
+                <input type="email" name="correo" id="cliente_correo" required><br>
+
+                <label>Direccion:</label>
+                <input type="text" name="direccion" id="cliente_direccion" required><br>
+
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="clientes_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const clienteID = params.get('id');
+
+        if (clienteID) {
+            fetch('../obtencion//clientes_obtener.php?id=' + clienteID)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data); // Verifica en la consola
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('cliente_id').value = data.id_cliente;
+                        document.getElementById('cliente_nombre').value = data.nombre;
+                        document.getElementById('cliente_telefono').value = data.telefono;
+                        document.getElementById('cliente_correo').value = data.correo;
+                        document.getElementById('cliente_direccion').value = data.direccion;
+                    }
+                })
+                .catch(error => console.error("Error al obtener datos del cliente:", error));
+        } else {
+            alert("ID de cliente no proporcionado.");
+        }
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

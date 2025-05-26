@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Proveedores</title>
+    <link rel="stylesheet" href="../Style/read.css">
+    <link rel="stylesheet" href="../Style/menu.css" />
+
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="proveedores_create.html" class="fghjkl">Agregar proveedor</a>
+            <input type="text" class="busqueda" id="searchInput" onkeyup="buscarProveedores()"
+                placeholder="Buscar por nombre o contacto...">
+        </div>
+
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../usuarios/usuarios_read.html">Usuarios</a>
+                    <a href="../inventario/inventario_read.html">Inventario</a>
+                    <a href="../proveedores/proveedores_read.html">Proveedores</a>
+                    <a href="../clientes/clientes_read.html">Clientes</a>
+                    <a href="../citas/citas_read.html">Citas</a>
+                    <a href="../categorias/categorias_read.html">Categorias</a>
+                    <a href="../ventas/ventas_read.html">Ventas</a>
+                    <a href="../historiales/historiales_read.html">Historiales</a>
+                    <a href="../mascotas/mascotas_read.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+        <h2>Lista de proveedores</h2>
+        <div class="input-container">
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Contacto</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="proveedoresTabla">
+                    <!-- Aquí se cargarán los proveedores con JS -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="../admin.html " class="menu-principal">Menu</a>
+        </div>
+        <script>
+            let proveedores = []; // Array para almacenar los datos de proveedor
+
+            function cargarproveedores() {
+                fetch('proveedores_read.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        proveedores = data; // Guardamos los datos en el array
+                        mostrarproveedores(proveedores); // Llamamos a la función que muestra los proveedors
+                    })
+                    .catch(error => console.error("Error al cargar los proveedores:", error));
+            }
+
+            function mostrarproveedores(data) {
+                const tabla = document.getElementById('proveedoresTabla');
+                tabla.innerHTML = '';
+                data.forEach(proveedor => {
+                    const fila = document.createElement('tr');
+
+                    fila.innerHTML = `
+                            <td>${proveedor.id_proveedor}</td>
+                            <td>${proveedor.nombre}</td>
+                            <td>${proveedor.contacto}</td>
+                            <td>${proveedor.telefono}</td>
+                            <td>${proveedor.correo}</td>
+                            <td>${proveedor.direccion}</td>
+                            <td>
+                                <a href="proveedores_update.html?id=${proveedor.id_proveedor}"class="fghjkl">Editar</a>
+                                <a href="proveedores_delete.php?id=${proveedor.id_proveedor}" onclick="return confirm('¿Seguro que deseas eliminar esta proveedor?')"class="fghjkl">Eliminar</a>
+                            </td>
+                        `;
+                    tabla.appendChild(fila);
+                });
+            }
+
+            // Función para filtrar los proveedors según el término de búsqueda
+            function buscarProveedores() {
+                const input = document.getElementById('searchInput');
+                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
+                const resultados = proveedores.filter(proveedor => {
+                    return proveedor.nombre.toLowerCase().includes(filtro) ||
+                        proveedor.contacto.toLowerCase().includes(filtro) ||
+                        proveedor.telefono.toLowerCase().includes(filtro);
+                });
+                mostrarproveedores(resultados); // Mostramos los proveedors filtrados
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarproveedores);
+        </script>
+        <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

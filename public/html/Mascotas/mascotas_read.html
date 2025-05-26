@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mascotas</title>
+    <link rel="stylesheet" href="../Style/read.css">
+    <link rel="stylesheet" href="../Style/menu.css" />
+
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="mascotas_create.html" class="fghjkl">Agregar mascota</a>
+            <input type="text" class="busqueda" id="searchMascotas" placeholder="Buscar por nombre o cliente..."
+                onkeyup="buscarMascotas()">
+        </div>
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../usuarios/usuarios_read.html">Usuarios</a>
+                    <a href="../inventario/inventario_read.html">Inventario</a>
+                    <a href="../proveedores/proveedores_read.html">Proveedores</a>
+                    <a href="../clientes/clientes_read.html">Clientes</a>
+                    <a href="../citas/citas_read.html">Citas</a>
+                    <a href="../categorias/categorias_read.html">Categorias</a>
+                    <a href="../ventas/ventas_read.html">Ventas</a>
+                    <a href="../historiales/historiales_read.html">Historiales</a>
+                    <a href="../mascotas/mascotas_read.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+        <h2>Lista de mascotas</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Especie</th>
+                        <th>Raza</th>
+                        <th>Edad</th>
+                        <th>Peso</th>
+                        <th>Cliente</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="mascotasTabla">
+                    <!-- Aquí se cargarán los mascotas con JS -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="../admin.html " class="menu-principal">Menu</a>
+        </div>
+        <script>
+            function cargarMascotas() {
+                fetch('mascotas_read.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tabla = document.getElementById('mascotasTabla');
+                        tabla.innerHTML = '';
+                        data.forEach(mascota => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
+                           <td>${mascota.id_mascota}</td>
+                            <td>${mascota.nombre}</td>
+                            <td>${mascota.especie}</td>
+                            <td>${mascota.raza}</td>
+                            <td>${mascota.edad}</td>
+                            <td>${mascota.peso}</td>
+                            <td>${mascota.cliente_nombre}</td>
+                            <td>
+                                <a href="mascotas_update.html?id=${mascota.id_mascota}"class="fghjkl">Editar</a>
+                                <a href="mascotas_delete.php?id=${mascota.id_mascota}" onclick="return confirm('¿Seguro que deseas eliminar esta mascota?')"class="fghjkl">Eliminar</a>
+                            </td>
+                        `;
+                            tabla.appendChild(fila);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar las mascotas:", error));
+            }
+
+            function buscarMascotas() {
+                let filtro = document.getElementById("searchMascotas").value.toLowerCase();
+                let filas = document.getElementById("mascotasTabla").getElementsByTagName("tr");
+
+                Array.from(filas).forEach(fila => {
+                    let nombreMascota = fila.cells[1]?.textContent.toLowerCase();
+                    let nombreCliente = fila.cells[6]?.textContent.toLowerCase();
+                    if ((nombreMascota && nombreMascota.includes(filtro)) || (nombreCliente && nombreCliente.includes(filtro))) {
+                        fila.style.display = "";
+                    } else {
+                        fila.style.display = "none";
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarMascotas);
+        </script>
+        <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

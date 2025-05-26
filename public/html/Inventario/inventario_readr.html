@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario</title>
+    <link rel="stylesheet" href="../Style/read.css">
+    <link rel="stylesheet" href="../Style/menu.css" />
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="inventario_creater.html" class="fghjkl">Agregar al inventario</a>
+            <input type="text" class="busqueda" id="searchInput" onkeyup="buscarInventario()"
+                placeholder="Buscar en el inventario...">
+        </div>
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../inventario/inventario_readr.html">Inventario</a>
+                    <a href="../clientes/clientes_readr.html">Clientes</a>
+                    <a href="../citas/citas_readr.html">Citas</a>
+                    <a href="../historiales/historiales_readr.html">Historiales</a>
+                    <a href="../mascotas/mascotas_readr.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+        <h2>Lista del inventario</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Categoria</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Descripcion</th>
+                        <th>Stock minimo</th>
+                        <th>Precio unitario</th>
+                        <th>Fecha registro</th>
+                        <th>Fecha vencimiento</th>
+                        <th>Proveedor</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody id="inventarioTabla">
+                    <!-- Aquí se cargarán los inventario con JS -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="../recp.html " class="menu-principal">Menu</a>
+        </div>
+
+        <script>
+            let inventarios = []; // Array para almacenar los datos de inventario
+
+            function cargarinventario() {
+                fetch('inventario_read.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        inventarios = data; // Guardamos los datos en el array
+                        mostrarInventarios(inventarios); // Llamamos a la función que muestra los inventarios
+                    })
+                    .catch(error => console.error("Error al cargar los inventarios:", error));
+            }
+
+            // Función para mostrar los inventarios en la tabla
+            function mostrarInventarios(data) {
+                const tabla = document.getElementById('inventarioTabla');
+                tabla.innerHTML = ''; // Limpiamos la tabla antes de volver a llenarla
+                data.forEach(inventario => {
+                    const fila = document.createElement('tr');
+
+                    fila.innerHTML = `
+<td>${inventario.id_inventario}</td>
+<td>${inventario.categoria_nombre}</td>
+<td>${inventario.nombre_producto}</td>
+<td>${inventario.cantidad}</td>
+<td>${inventario.descripcion}</td>
+<td>${inventario.stock_minimo}</td>
+<td>${inventario.precio_unitario}</td>
+<td>${inventario.fecha_registro}/td>
+<td>${inventario.fecha_vencimiento}</td>
+<td>${inventario.proveedor_nombre}</td>
+<td>${inventario.notas}</td>
+
+`;
+                    tabla.appendChild(fila);
+                });
+            }
+
+
+            // Función para filtrar los inventarios según el término de búsqueda
+            function buscarInventario() {
+                const input = document.getElementById('searchInput');
+                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
+                const resultados = inventarios.filter(inventario => {
+                    return inventario.nombre_producto.toLowerCase().includes(filtro) ||
+                        inventario.categoria_nombre.toLowerCase().includes(filtro) ||
+                        inventario.descripcion.toLowerCase().includes(filtro);
+                });
+                mostrarInventarios(resultados); // Mostramos los inventarios filtrados
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarinventario);
+        </script>
+        <!--<script src="../Js/auth.js" defer></script>-->
+</body>
+
+</html>

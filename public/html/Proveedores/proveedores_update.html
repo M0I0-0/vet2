@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar proveedor</title>
+    <link rel="stylesheet" href="../Style/form.css">
+
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Editar proveedor</h1>
+        <form action="proveedores_update.php" method="post">
+            <input type="hidden" name="id_proveedor" id="proveedor_id">
+            <div class="input-container">
+
+                <label>Nombre:</label>
+                <input type="text" name="nombre" id="proveedor_nombre" required><br>
+
+                <label>Contacto:</label>
+                <input type="text" name="contacto" id="proveedor_contacto" required><br>
+
+                <label>Telefono:</label>
+                <input type="text" name="telefono" id="proveedor_telefono" required><br>
+
+                <label>Correo:</label>
+                <input type="email" name="correo" id="proveedor_correo" required><br>
+
+                <label>Direccion:</label>
+                <input type="text" name="direccion" id="proveedor_direccion" required />
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="proveedores_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const proveedorID = params.get('id');
+
+        if (proveedorID) {
+            fetch('../obtencion//proveedores_obtener.php?id=' + proveedorID)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data); // Verifica en la consola
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('proveedor_id').value = data.id_proveedor;
+                        document.getElementById('proveedor_nombre').value = data.nombre;
+                        document.getElementById('proveedor_contacto').value = data.contacto;
+                        document.getElementById('proveedor_telefono').value = data.telefono;
+                        document.getElementById('proveedor_correo').value = data.correo;
+                        document.getElementById('proveedor_direccion').value = data.direccion;
+
+                    }
+                })
+                .catch(error => console.error("Error al obtener datos del proveedor:", error));
+        } else {
+            alert("ID de proveedor no proporcionado.");
+        } 
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

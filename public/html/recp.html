@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Recepción</title>
+    <link rel="stylesheet" href="css/actores.css">
+    <link rel="stylesheet" href="css/menu.css" />
+</head>
+
+<body>
+    <header>
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+        </div>
+        <h1>Panel de Recepcionista</h1>
+        <a href="index.html">Cerrar Sesión</a>
+    </header>
+
+    <!-- Menú lateral -->
+    <input type="checkbox" id="btn-menu">
+    <div class="container-menu">
+        <div class="cont-menu">
+            <label for="btn-menu" class="close-btn">✖️</label>
+            <nav>
+                <a href="inventario/inventario_readr.html">Inventario</a>
+                <a href="clientes/clientes_readr.html">Clientes</a>
+                <a href="citas/citas_readr.html">Citas</a>
+                <a href="historiales/historiales_readr.html">Historiales</a>
+                <a href="mascotas/mascotas_readr.html">Mascotas</a>
+            </nav>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="card">
+            <h2>Inventario</h2>
+            <p>Desde aquí puedes gestionar el inventario de la veterinaria</p>
+            <div class="actions">
+                <form action="inventario/inventario_readr.html" method="GET">
+                    <button type="submit">Acceder</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Clientes</h2>
+            <p>Desde aquí puedes gestionar a los clientes.</p>
+            <div class="actions">
+                <form action="clientes/clientes_readr.html" method="GET">
+                    <button type="submit">Acceder</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Citas</h2>
+            <p>Desde aquí puedes gestionar las citas.</p>
+            <div class="actions">
+                <form action="citas/citas_readr.html" method="GET">
+                    <button type="submit">Acceder</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Historiales Médicos</h2>
+            <p>Desde aquí puedes gestionar los historiales de cada mascota.</p>
+            <div class="actions">
+                <form action="historiales/historiales_readr.html" method="GET">
+                    <button type="submit">Acceder</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Mascotas</h2>
+            <p>Desde aquí puedes gestionar las mascotas.</p>
+            <div class="actions">
+                <form action="mascotas/mascotas_readr.html" method="GET">
+                    <button type="submit">Acceder</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </main>
+    <script src="Js/auth.js" defer></script>
+</body>
+
+</html>

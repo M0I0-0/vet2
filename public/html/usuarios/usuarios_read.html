@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="../../css/read.css">
+    <link rel="stylesheet" href="../../css/menu.css">
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="usuarios_create.html" class="fghjkl">Agregar usuario</a>
+            <input type="text" class="busqueda" id="searchUsuarios" placeholder="Buscar por nombre..."
+                onkeyup="buscarUsuarios()">
+        </div>
+
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../usuarios/usuarios_read.html">Usuarios</a>
+                    <a href="../inventario/inventario_read.html">Inventario</a>
+                    <a href="../proveedores/proveedores_read.html">Proveedores</a>
+                    <a href="../clientes/clientes_read.html">Clientes</a>
+                    <a href="../citas/citas_read.html">Citas</a>
+                    <a href="../categorias/categorias_read.html">Categorías</a>
+                    <a href="../ventas/ventas_read.html">Ventas</a>
+                    <a href="../historiales/historiales_read.html">Historiales</a>
+                    <a href="../mascotas/mascotas_read.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+
+        <h2>Lista de usuarios</h2>
+
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Contraseña</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usuariosTabla">
+                    <!-- Aquí se cargarán los usuarios con JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <a href="/admin" class="menu-principal">Menu</a>
+        </div>
+
+        <script>
+            const API_URL = 'http://localhost:3000/usuarios';
+
+            function cargarUsuarios() {
+                fetch(API_URL)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tabla = document.getElementById('usuariosTabla');
+                        tabla.innerHTML = '';
+                        data.forEach(usuario => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
+                                <td>${usuario.id_usuario}</td>
+                                <td>${usuario.nombre}</td>
+                                <td>${usuario.correo}</td>
+                                <td>${usuario.contraseña}</td>
+                                <td>${usuario.rol}</td>
+                                <td>
+                                    <a href="usuarios_update.html?id=${usuario.id_usuario}" class="fghjkl">Editar</a>
+                                    <a href="#" onclick="eliminarUsuario(${usuario.id_usuario})" class="fghjkl">Eliminar</a>
+                                </td>
+                            `;
+                            tabla.appendChild(fila);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar los usuarios:", error));
+            }
+
+            function buscarUsuarios() {
+                const input = document.getElementById("searchUsuarios").value.toLowerCase();
+                const filas = document.querySelectorAll("#usuariosTabla tr");
+
+                filas.forEach(fila => {
+                    const nombre = fila.children[1].textContent.toLowerCase();
+                    fila.style.display = nombre.includes(input) ? "" : "none";
+                });
+            }
+
+            function eliminarUsuario(id) {
+                if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        alert("Usuario eliminado exitosamente.");
+                        cargarUsuarios();
+                    })
+                    .catch(error => console.error("Error al eliminar usuario:", error));
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarUsuarios);
+        </script>
+
+        <script src="../Js/auth.js" defer></script>
+    </div>
+</body>
+
+</html>

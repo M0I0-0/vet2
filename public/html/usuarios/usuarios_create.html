@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo usuario</title>
+    <link rel="stylesheet" href="../../css/form.css">
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Nuevo usuario</h1>
+        <form action="usuarios_create.php" method="post">
+
+            <div class="input-container">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" required><br>
+
+                <label>Correo:</label>
+                <input type="email" name="correo" required><br>
+
+                <label>Contraseña:</label>
+                <input type="password" name="contraseña" required><br>
+
+                <label>Rol:</label>
+                <select name="rol" required>
+                    <option value="">Selecciona una opcion</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Contador">Contador</option>
+                    <option value="Veterinario">Veterinario</option>
+                    <option value="Recepcionista">Recepcionista</option>
+                </select><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="usuarios_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

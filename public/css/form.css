@@ -1,0 +1,136 @@
+:root {
+    --primary-color: #692a95;
+    --primary-hover: #0056b3;
+    --background-color: #6f4679;
+    --text-color: #333;
+    --border-radius: 10px;
+    --transition-speed: 0.3s ease-in-out;
+    --input-border: #6a0dad;
+    --input-hover: #d63384;
+    --form-bg: #ffffff;
+    --button-color: #8a3fc7;
+    --button-hover: #342188;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: var(--text-color);
+    background: var(--background-color);
+    padding-top: 20px;
+}
+
+.cont {
+    background: var(--form-bg);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+form {
+    padding: 25px;
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    max-height: 350px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+    color: var(--primary-color);
+    text-align: center;
+    display: block;
+}
+
+input,
+select {
+    padding: 10px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #fff;
+    color: var(--text-color);
+    outline: none;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+    margin-bottom: 15px;
+    width: 80%;
+}
+
+input:focus,
+select:focus,
+input:hover,
+select:hover {
+    border-color: var(--input-hover);
+    box-shadow: 0 6px 12px var(--input-hover);
+}
+
+/* Botones */
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+a,
+input[type="submit"] {
+    background: var(--button-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: var(--border-radius);
+    transition: var(--transition-speed);
+    width: 50%;
+    text-align: center;
+    text-decoration: none;
+}
+
+a:hover,
+input[type="submit"]:hover {
+    background-color: var(--input-hover);
+    box-shadow: 0 6px 12px var(--input-hover);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

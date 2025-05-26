@@ -1,0 +1,141 @@
+:root {
+    --primary-color: #692a95;
+    --background-color: #6f4679;
+    --border-radius: 10px;
+    --transition-speed: 0.3s ease-in-out;
+    --input-border: #6a0dad;
+    --form-bg: #ffffff;
+    --button-color: #8a3fc7;
+    --row-hover: #e6d3f4;
+    --row-alt: #f8efff;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--background-color);
+    margin: 20px;
+    padding: 20px;
+    color: #333;
+}
+
+h2 {
+    font-size: 1.8em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.container-menu {
+    z-index: 1000;
+}
+
+.fghjkl, .menu-principal {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: var(--input-border);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 10px 0; 
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.fghjkl:hover, .menu-principal:hover {
+    background-color: #d63384;
+    box-shadow: 0 6px 12px #d63384;
+    transform: scale(1.05);
+}
+
+.menu-principal {
+    padding: 10px 45%;
+}
+
+td .fghjkl {
+    padding: 8px 10px;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: var(--button-color);
+    color: white;
+    text-transform: uppercase;
+    position: sticky; /* Hace que los encabezados se mantengan fijos */
+    top: 0; /* Fija los encabezados en la parte superior */
+    z-index: 2; /* Asegura que estén por encima del contenido */
+}
+
+tr:nth-child(even) {
+    background-color: var(--row-alt);
+}
+
+tr:hover {
+    background-color: var(--row-hover);
+}
+
+.busqueda {
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid var(--input-border);
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: var(--transition-speed);
+}
+
+.busqueda:focus, .busqueda:hover {
+    border-color: #d63384;
+    box-shadow: 0 8px 12px rgba(214, 51, 132, 0.5);
+}
+
+.busqueda::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.card-td {
+    background: var(--form-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    text-align: center;
+    animation: fadeIn var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.btn-menu {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.input-container {
+    max-height: 350px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    position: relative;
+}

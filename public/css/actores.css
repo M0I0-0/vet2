@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #6f4679;
+    color: #333;
+    overflow-x: hidden;
+}
+
+header {
+    background: #692a95;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 600;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-weight: 500;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Menú lateral */
+.btn-menu label {
+    font-size: 30px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#btn-menu {
+    display: none;
+}
+
+.container-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background: #1c1c1c;
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.4);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease-in-out;
+    z-index: 1000;
+}
+
+#btn-menu:checked~.container-menu {
+    transform: translateX(0);
+}
+
+.cont-menu {
+    padding: 60px 20px;
+}
+
+.cont-menu nav a {
+    color: #c7c7c7;
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    border-bottom: 1px solid #333;
+    transition: all 0.3s ease;
+    font-size: 22px;
+}
+
+.cont-menu nav a:hover {
+    background: #333;
+    padding-left: 25px;
+    color: #6f4679;
+}
+
+/* Botón de cierre */
+.close-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Contenido principal */
+.main-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    justify-content: center;
+    padding: 60px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    /* Evita que flote sobre el menú */
+    z-index: 1;
+    /* Asegura que el menú esté por encima */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.actions {
+    margin-top: 20px;
+}
+
+.actions button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #6a0dad;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.actions button:hover {
+    background: #d63384;
+    box-shadow: 0 6px 12px #d63384;
+}
+
+/* Ajustar para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}

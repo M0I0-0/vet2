@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar usuario</title>
+    <link rel="stylesheet" href="../../css/form.css">
+
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Editar usuario</h1>
+        <form action="usuarios_update.php" method="post">
+            <input type="hidden" name="id_usuario" id="usuario_id">
+            <div class="input-container">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" id="usuario_nombre" required><br>
+
+                <label>Correo:</label>
+                <input type="text" name="correo" id="usuario_correo" required><br>
+
+                <label>Contraseña:</label>
+                <input type="password" name="contraseña" id="usuario_contraseña" required><br>
+
+                <label>Rol:</label>
+                <select name="rol" id="usuario_rol" required>
+                    <option value="">Selecciona una opcion</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Contador">Contador</option>
+                    <option value="Veterinario">Veterinario</option>
+                    <option value="Recepcionista">Recepcionista</option>
+                </select><br>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="usuarios_read.html">Regresar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const usuarioID = params.get('id');
+
+        if (usuarioID) {
+            fetch('../obtencion//usuarios_obtener.php?id=' + usuarioID)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data); // Verifica en la consola
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('usuario_id').value = data.id_usuario;
+                        document.getElementById('usuario_correo').value = data.correo;
+                        document.getElementById('usuario_nombre').value = data.nombre;
+                        document.getElementById('usuario_contraseña').value = data.contraseña;
+                        document.getElementById('usuario_rol').value = data.rol;
+                    }
+                })
+                .catch(error => console.error("Error al obtener datos de la usuario:", error));
+        } else {
+            alert("ID de usuario no proporcionado.");
+        }
+
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

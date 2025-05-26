@@ -1,0 +1,106 @@
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --border-radius: 10px;
+    --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    --transition-speed: 0.3s ease-in-out;
+    --input-border: #ccc;
+    --input-focus-border: #007bff;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.login-container {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn var(--transition-speed);
+}
+
+.login-container img {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 100px;
+}
+
+.login-container h1 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius);
+    font-size: 1em;
+    transition: var(--transition-speed);
+    background: #f9f9f9;
+}
+
+.form-group input:focus {
+    border-color: var(--input-focus-border);
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+    background: #ffffff;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: var(--transition-speed);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group button:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.form-group button:active {
+    transform: scale(0.98);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.error {
+    color: red;
+    text-align: center;
+}

@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Historial</title>
-    <link rel="stylesheet" href="../Style/read.css" />
-    <link rel="stylesheet" href="../Style/menu.css" />
-
+    <link rel="stylesheet" href="../../css/read.css" />
+    <link rel="stylesheet" href="../../css/menu.css" />
 </head>
 
 <body>
@@ -15,7 +14,7 @@
             <label for="btn-menu">☰</label>
             <a href="historiales_create.html" class="fghjkl">Agregar historial</a>
             <input type="text" class="busqueda" id="searchInput" placeholder="Buscar por mascota..."
-                onkeyup="buscarhistorial()">
+                onkeyup="buscarHistorial()">
         </div>
 
         <!-- Menú lateral -->
@@ -29,13 +28,14 @@
                     <a href="../proveedores/proveedores_read.html">Proveedores</a>
                     <a href="../clientes/clientes_read.html">Clientes</a>
                     <a href="../citas/citas_read.html">Citas</a>
-                    <a href="../categorias/categorias_read.html">Categorias</a>
+                    <a href="../categorias/categorias_read.html">Categorías</a>
                     <a href="../ventas/ventas_read.html">Ventas</a>
                     <a href="../historiales/historiales_read.html">Historiales</a>
                     <a href="../mascotas/mascotas_read.html">Mascotas</a>
                 </nav>
             </div>
         </div>
+
         <h2>Lista de historiales médicos</h2>
         <div class="input-container">
             <table border="1">
@@ -50,60 +50,73 @@
                     </tr>
                 </thead>
                 <tbody id="historialTabla">
-                    <!-- Aquí se cargarán los historial con JS -->
+                    <!-- Aquí se cargarán los historiales -->
                 </tbody>
             </table>
         </div>
+
         <div>
-            <a href="../admin.html " class="menu-principal">Menu</a>
+            <a href="/admin" class="menu-principal">Menú</a>
         </div>
 
         <script>
-            let historiales = []; // Array para almacenar los datos de categoria
+            const API_URL = 'http://localhost:3000/historiales';
+            let historiales = [];
 
-            function cargarhistorial() {
-                fetch('historiales_read.php')
+            function cargarHistorial() {
+                fetch(API_URL)
                     .then(response => response.json())
                     .then(data => {
-                        historiales = data; // Guardamos los datos en el array
-                        mostrarhistorial(historiales); // Llamamos a la función que muestra los categorias
+                        historiales = data;
+                        mostrarHistorial(historiales);
                     })
-                    .catch(error => console.error("Error al cargar los categorias:", error));
+                    .catch(error => console.error("Error al cargar los historiales:", error));
             }
 
-            function mostrarhistorial(data) {
+            function mostrarHistorial(data) {
                 const tabla = document.getElementById('historialTabla');
                 tabla.innerHTML = '';
                 data.forEach(historial => {
                     const fila = document.createElement('tr');
-
                     fila.innerHTML = `
-                            <td>${historial.id_historial}</td>
-                            <td>${historial.mascota}</td>
-                            <td>${historial.fecha}</td>
-                            <td>${historial.descripcion}</td>
-                            <td>${historial.tratamiento}</td>
-                            <td>
-                                <a href="historiales_update.html?id=${historial.id_historial}"class="fghjkl">Editar</a>
-                                <a href="historiales_delete.php?id=${historial.id_historial}" onclick="return confirm('¿Seguro que deseas eliminar esta historial?')"class="fghjkl">Eliminar</a>
-                            </td>
-                        `;
+                        <td>${historial.id_historial}</td>
+                        <td>${historial.mascota}</td>
+                        <td>${historial.fecha}</td>
+                        <td>${historial.descripcion}</td>
+                        <td>${historial.tratamiento}</td>
+                        <td>
+                            <a href="historiales_update.html?id=${historial.id_historial}" class="fghjkl">Editar</a>
+                            <a href="#" onclick="eliminarHistorial(${historial.id_historial})" class="fghjkl">Eliminar</a>
+                        </td>
+                    `;
                     tabla.appendChild(fila);
                 });
             }
 
-            function buscarhistorial() {
-                const input = document.getElementById('searchInput');
-                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                const resultados = historiales.filter(historial => {
-                    return historial.mascota.toLowerCase().includes(filtro);
-                });
-                mostrarhistorial(resultados); // Mostramos los categorias filtrados
+            function buscarHistorial() {
+                const filtro = document.getElementById("searchInput").value.toLowerCase();
+                const resultados = historiales.filter(h => h.mascota.toLowerCase().includes(filtro));
+                mostrarHistorial(resultados);
             }
 
-            document.addEventListener("DOMContentLoaded", cargarhistorial);
+            function eliminarHistorial(id) {
+                if (confirm('¿Seguro que deseas eliminar este historial?')) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        alert("Historial eliminado correctamente.");
+                        cargarHistorial();
+                    })
+                    .catch(error => console.error("Error al eliminar historial:", error));
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarHistorial);
         </script>
         <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 
 </html>

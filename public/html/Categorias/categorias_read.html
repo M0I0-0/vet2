@@ -3,20 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Categorias</title>
-    <link rel="stylesheet" href="../Style/read.css">
-    <link rel="stylesheet" href="../Style/menu.css">
+    <title>Categorías</title>
+    <link rel="stylesheet" href="../../css/read.css">
+    <link rel="stylesheet" href="../../css/menu.css">
 </head>
 
 <body>
     <div class="card-td">
         <div class="btn-menu">
             <label for="btn-menu">☰</label>
-            <a href="categorias_create.html" class="fghjkl">Agregar categoria</a>
+            <a href="categorias_create.html" class="fghjkl">Agregar categoría</a>
             <input type="text" class="busqueda" id="searchInput" onkeyup="buscarCategorias()"
                 placeholder="Buscar por nombre...">
         </div>
 
+        <!-- Menú lateral -->
         <input type="checkbox" id="btn-menu">
         <div class="container-menu">
             <div class="cont-menu">
@@ -27,7 +28,7 @@
                     <a href="../proveedores/proveedores_read.html">Proveedores</a>
                     <a href="../clientes/clientes_read.html">Clientes</a>
                     <a href="../citas/citas_read.html">Citas</a>
-                    <a href="../categorias/categorias_read.html">Categorias</a>
+                    <a href="../categorias/categorias_read.html">Categorías</a>
                     <a href="../ventas/ventas_read.html">Ventas</a>
                     <a href="../historiales/historiales_read.html">Historiales</a>
                     <a href="../mascotas/mascotas_read.html">Mascotas</a>
@@ -35,10 +36,8 @@
             </div>
         </div>
 
-
-        <h2>Lista de categorias</h2>
+        <h2>Lista de categorías</h2>
         <div class="input-container">
-
             <table border="1">
                 <thead>
                     <tr>
@@ -48,60 +47,75 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
-
                 <tbody id="categoriasTabla">
+                    <!-- JS insertará aquí las filas -->
                 </tbody>
             </table>
         </div>
+
         <div>
-            <a href="../admin.html" class="menu-principal">Menu</a>
+            <a href="/admin" class="menu-principal">Menú</a>
         </div>
 
         <script>
-            let categorias = []; 
+            const API_URL = 'http://localhost:3000/categorias';
+            let categorias = [];
 
-            function cargarcategorias() {
-                fetch('categorias_read.php')
+            function cargarCategorias() {
+                fetch(API_URL)
                     .then(response => response.json())
                     .then(data => {
-                        categorias = data; // Guardamos los datos en el array
-                        mostrarcategorias(categorias); // Llamamos a la función que muestra los categorias
+                        categorias = data;
+                        mostrarCategorias(categorias);
                     })
-                    .catch(error => console.error("Error al cargar los categorias:", error));
+                    .catch(error => console.error("Error al cargar las categorías:", error));
             }
 
-            function mostrarcategorias(data) {
+            function mostrarCategorias(data) {
                 const tabla = document.getElementById('categoriasTabla');
                 tabla.innerHTML = '';
                 data.forEach(categoria => {
                     const fila = document.createElement('tr');
-
                     fila.innerHTML = `
-                            <td>${categoria.id_categoria}</td>
-                            <td>${categoria.nombre}</td>
-                            <td>${categoria.descripcion}</td>
-                            <td>
-                                <a href="categorias_update.html?id=${categoria.id_categoria}"class="fghjkl">Editar</a>
-                                <a href="categorias_delete.php?id=${categoria.id_categoria}" onclick="return confirm('¿Seguro que deseas eliminar esta categoria?')"class="fghjkl">Eliminar</a>
-                            </td>
-                        `;
+                        <td>${categoria.id_categoria}</td>
+                        <td>${categoria.nombre}</td>
+                        <td>${categoria.descripcion}</td>
+                        <td>
+                            <a href="categorias_update.html?id=${categoria.id_categoria}" class="fghjkl">Editar</a>
+                            <a href="#" onclick="eliminarCategoria(${categoria.id_categoria})" class="fghjkl">Eliminar</a>
+                        </td>
+                    `;
                     tabla.appendChild(fila);
                 });
             }
 
-            // Función para filtrar los categorias según el término de búsqueda
             function buscarCategorias() {
-                const input = document.getElementById('searchInput');
-                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                const resultados = categorias.filter(categoria => {
-                    return categoria.nombre.toLowerCase().includes(filtro);
-                });
-                mostrarcategorias(resultados); // Mostramos los categorias filtrados
+                const filtro = document.getElementById('searchInput').value.toLowerCase();
+                const resultados = categorias.filter(categoria =>
+                    categoria.nombre.toLowerCase().includes(filtro)
+                );
+                mostrarCategorias(resultados);
             }
 
-            document.addEventListener("DOMContentLoaded", cargarcategorias);
+            function eliminarCategoria(id) {
+                if (confirm("¿Seguro que deseas eliminar esta categoría?")) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        alert("Categoría eliminada exitosamente.");
+                        cargarCategorias();
+                    })
+                    .catch(error => console.error("Error al eliminar la categoría:", error));
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarCategorias);
         </script>
+
         <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 
 </html>

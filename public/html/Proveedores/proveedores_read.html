@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Proveedores</title>
-    <link rel="stylesheet" href="../Style/read.css">
-    <link rel="stylesheet" href="../Style/menu.css" />
-
+    <link rel="stylesheet" href="../../css/read.css">
+    <link rel="stylesheet" href="../../css/menu.css" />
 </head>
 
 <body>
@@ -36,9 +35,9 @@
                 </nav>
             </div>
         </div>
+
         <h2>Lista de proveedores</h2>
         <div class="input-container">
-
             <table border="1">
                 <thead>
                     <tr>
@@ -56,59 +55,63 @@
                 </tbody>
             </table>
         </div>
-        <div>
-            <a href="../admin.html " class="menu-principal">Menu</a>
-        </div>
-        <script>
-            let proveedores = []; // Array para almacenar los datos de proveedor
 
-            function cargarproveedores() {
-                fetch('proveedores_read.php')
-                    .then(response => response.json())
+        <div>
+            <a href="/admin" class="menu-principal">Menú</a>
+        </div>
+
+        <script>
+            let proveedores = [];
+
+            function cargarProveedores() {
+                fetch('http://localhost:3000/proveedores') // <-- Ruta del backend en Node.js
+                    .then(response => {
+                        if (!response.ok) throw new Error("Error al obtener proveedores");
+                        return response.json();
+                    })
                     .then(data => {
-                        proveedores = data; // Guardamos los datos en el array
-                        mostrarproveedores(proveedores); // Llamamos a la función que muestra los proveedors
+                        proveedores = data;
+                        mostrarProveedores(proveedores);
                     })
                     .catch(error => console.error("Error al cargar los proveedores:", error));
             }
 
-            function mostrarproveedores(data) {
+            function mostrarProveedores(data) {
                 const tabla = document.getElementById('proveedoresTabla');
                 tabla.innerHTML = '';
                 data.forEach(proveedor => {
                     const fila = document.createElement('tr');
-
                     fila.innerHTML = `
-                            <td>${proveedor.id_proveedor}</td>
-                            <td>${proveedor.nombre}</td>
-                            <td>${proveedor.contacto}</td>
-                            <td>${proveedor.telefono}</td>
-                            <td>${proveedor.correo}</td>
-                            <td>${proveedor.direccion}</td>
-                            <td>
-                                <a href="proveedores_update.html?id=${proveedor.id_proveedor}"class="fghjkl">Editar</a>
-                                <a href="proveedores_delete.php?id=${proveedor.id_proveedor}" onclick="return confirm('¿Seguro que deseas eliminar esta proveedor?')"class="fghjkl">Eliminar</a>
-                            </td>
-                        `;
+                        <td>${proveedor.id_proveedor}</td>
+                        <td>${proveedor.nombre}</td>
+                        <td>${proveedor.contacto}</td>
+                        <td>${proveedor.telefono}</td>
+                        <td>${proveedor.correo}</td>
+                        <td>${proveedor.direccion}</td>
+                        <td>
+                            <a href="proveedores_update.html?id=${proveedor.id_proveedor}" class="fghjkl">Editar</a>
+                            <a href="proveedores_delete.html?id=${proveedor.id_proveedor}" onclick="return confirm('¿Seguro que deseas eliminar este proveedor?')" class="fghjkl">Eliminar</a>
+                        </td>
+                    `;
                     tabla.appendChild(fila);
                 });
             }
 
-            // Función para filtrar los proveedors según el término de búsqueda
             function buscarProveedores() {
-                const input = document.getElementById('searchInput');
-                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                const resultados = proveedores.filter(proveedor => {
-                    return proveedor.nombre.toLowerCase().includes(filtro) ||
-                        proveedor.contacto.toLowerCase().includes(filtro) ||
-                        proveedor.telefono.toLowerCase().includes(filtro);
-                });
-                mostrarproveedores(resultados); // Mostramos los proveedors filtrados
+                const filtro = document.getElementById('searchInput').value.toLowerCase();
+                const resultados = proveedores.filter(p =>
+                    p.nombre.toLowerCase().includes(filtro) ||
+                    p.contacto.toLowerCase().includes(filtro) ||
+                    p.telefono.toLowerCase().includes(filtro)
+                );
+                mostrarProveedores(resultados);
             }
 
-            document.addEventListener("DOMContentLoaded", cargarproveedores);
+            document.addEventListener("DOMContentLoaded", cargarProveedores);
         </script>
+
         <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 
 </html>

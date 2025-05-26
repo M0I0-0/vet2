@@ -3,99 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <title>Ventas</title>
-    <link rel="stylesheet" href="../Style/read.css">
-    <link rel="stylesheet" href="../Style/menu.css"/>
-
+    <link rel="stylesheet" href="../../css/read.css">
+    <link rel="stylesheet" href="../../css/menu.css" />
 </head>
 <body>
     <div class="card-td">
-    <div class="btn-menu">
-        <label for="btn-menu">☰</label>
-        <a href="ventas_create.html"class="fghjkl">Agregar venta</a>
-        <input type="text" class = "busqueda" id="searchInput" onkeyup="buscarVentas()" placeholder="Buscar por cliente...">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="ventas_create.html" class="fghjkl">Agregar venta</a>
+            <input type="text" class="busqueda" id="searchInput" onkeyup="buscarVentas()" placeholder="Buscar por cliente...">
+        </div>
+
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../usuarios/usuarios_read.html">Usuarios</a>
+                    <a href="../inventario/inventario_read.html">Inventario</a>
+                    <a href="../proveedores/proveedores_read.html">Proveedores</a>
+                    <a href="../clientes/clientes_read.html">Clientes</a>
+                    <a href="../citas/citas_read.html">Citas</a>
+                    <a href="../categorias/categorias_read.html">Categorias</a>
+                    <a href="../ventas/ventas_read.html">Ventas</a>
+                    <a href="../historiales/historiales_read.html">Historiales</a>
+                    <a href="../mascotas/mascotas_read.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+
+        <h2>Lista de ventas</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ventasTabla">
+                    <!-- Aquí se cargarán las ventas con JS -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="/admin" class="menu-principal">Menú</a>
+        </div>
+
+        <script>
+            let ventas = [];
+
+            function cargarVentas() {
+                fetch('http://localhost:3000/ventas') // Ajusta la URL si usas proxy o deploy
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error al obtener ventas");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        ventas = data;
+                        mostrarVentas(ventas);
+                    })
+                    .catch(error => console.error("Error al cargar ventas:", error));
+            }
+
+            function mostrarVentas(data) {
+                const tabla = document.getElementById('ventasTabla');
+                tabla.innerHTML = '';
+                data.forEach(venta => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${venta.id_factura}</td>
+                        <td>${venta.cliente_nombre}</td>
+                        <td>${venta.fecha}</td>
+                        <td>$${venta.total}</td>
+                        <td>
+                            <a href="ventas_update.html?id=${venta.id_venta}" class="fghjkl">Editar</a>
+                            <a href="ventas_delete.html?id=${venta.id_venta}" onclick="return confirm('¿Seguro que deseas eliminar esta venta?')" class="fghjkl">Eliminar</a>
+                        </td>
+                    `;
+                    tabla.appendChild(fila);
+                });
+            }
+
+            function buscarVentas() {
+                const filtro = document.getElementById("searchInput").value.toLowerCase();
+                const resultados = ventas.filter(venta =>
+                    venta.cliente_nombre.toLowerCase().includes(filtro)
+                );
+                mostrarVentas(resultados);
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarVentas);
+        </script>
+
+        <script src="../Js/auth.js" defer></script>
     </div>
- <!-- Menú lateral -->
- <input type="checkbox" id="btn-menu">
- <div class="container-menu">
-     <div class="cont-menu">
-         <label for="btn-menu" class="close-btn">✖️</label>
-         <nav>
-             <a href="../usuarios/usuarios_read.html">Usuarios</a>
-             <a href="../inventario/inventario_read.html">Inventario</a>
-             <a href="../proveedores/proveedores_read.html">Proveedores</a>
-             <a href="../clientes/clientes_read.html">Clientes</a>
-             <a href="../citas/citas_read.html">Citas</a>
-             <a href="../categorias/categorias_read.html">Categorias</a>
-             <a href="../ventas/ventas_read.html">Ventas</a>
-             <a href="../historiales/historiales_read.html">Historiales</a>
-             <a href="../mascotas/mascotas_read.html">Mascotas</a>
-         </nav>
-     </div>
- </div>
-    <h2>Lista de ventas</h2>
-    <div class="input-container">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="ventasTabla">
-            <!-- Aquí se cargarán los ventas con JS -->
-        </tbody>
-    </table>
-</div>
-<div>
-    <a href="../admin.html " class="menu-principal">Menu</a>
-</div>
-    <script>
-        let ventas = []; // Array para almacenar los datos de inventario
-
-        function cargarventas() {
-            fetch('ventas_read.php')
-                .then(response => response.json())
-                .then(data => {
-                    ventas = data; // Guardamos los datos en el array
-                    mostrarventas(ventas); // Llamamos a la función que muestra los inventarios
-                })
-                .catch(error => console.error("Error al cargar las ventas:", error));
-        }
-
-        function mostrarventas(data) {
-                    const tabla = document.getElementById('ventasTabla');
-                    tabla.innerHTML = '';
-                    data.forEach(venta => {
-                        const fila = document.createElement('tr');
-                        
-                        fila.innerHTML = `
-                            <td>${venta.id_factura}</td>
-                            <td>${venta.cliente_nombre}</td>
-                            <td>${venta.fecha}</td>
-                            <td>${venta.total}</td>
-                            <td>
-                                <a href="ventas_update.html?id=${venta.id_venta}"class="fghjkl">Editar</a>
-                                <a href="ventas_delete.php?id=${venta.id_venta}" onclick="return confirm('¿Seguro que deseas eliminar esta venta?')"class="fghjkl">Eliminar</a>
-                            </td>
-                        `;
-                        tabla.appendChild(fila);
-                    });
-                }
-
-                function buscarVentas() {
-                    const input = document.getElementById('searchInput');
-                    const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                    const resultados = ventas.filter(venta => {
-                        return venta.cliente_nombre.toLowerCase().includes(filtro);
-                    });
-                    mostrarventas(resultados); // Mostramos los inventarios filtrados
-                }
-
-        document.addEventListener("DOMContentLoaded", cargarventas);
-    </script>
-    <script src="../Js/auth.js" defer></script>
 </body>
 </html>

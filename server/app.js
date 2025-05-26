@@ -50,17 +50,20 @@ app.delete('/usuarios/:id', (req, res) => {
   }
 });
 
+
+
+// citas
 app.get('/citas', (req, res) => {
   try {
     const stmt = db.prepare('SELECT * FROM citas');
-    const usuarios = stmt.all(); // .all() para múltiples resultados
-    res.json(usuarios);
+    const citas = stmt.all(); // .all() para múltiples resultados
+    res.json(citas);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Eliminar usuario
+// Eliminar citas
 app.delete('/citas/:id', (req, res) => {
   try {
     const id = req.params.id;
@@ -76,6 +79,9 @@ app.delete('/citas/:id', (req, res) => {
   }
 });
 
+
+
+//login
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'html', 'index.html'));
 });

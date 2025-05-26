@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva cita</title>
+    <link rel="stylesheet" href="../Style/form.css">
+</head>
+
+<body>
+    <div class="cont">
+        <h1>Nueva cita</h1>
+        <form action="citas_create.php" method="post">
+
+            <div class="input-container">
+                <label>Estado:</label>
+                <select name="estado" required>
+                    <option value="">Selecciona un estado</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Completada">Completada</option>
+                    <option value="Cancelada">Cancelada</option>
+                </select><br>
+
+                <label>Fecha:</label>
+                <input type="date" name="fecha" required><br>
+
+                <label>Hora:</label>
+                <input type="time" name="hora" required><br>
+
+                <label>Mascota:</label>
+                <select name="mascota" id="mascotaSelect" required>
+                    <option value="">Selecciona una mascota</option>
+                </select><br>
+
+                <label>Veterinario:</label>
+                <select name="veterinario" id="veterinarioSelect" required>
+                    <option value="">Selecciona un veterinario</option>
+                </select><br>
+
+                <label>Motivo:</label>
+                <input type="text" name="motivo" required />
+
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Guardar">
+                <a href="citas_readr.html">Regresar</a>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        function cargarMascotas() {
+            fetch('../obtencion/mascotas2_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('mascotaSelect');
+                    data.forEach(mascota => {
+                        const option = document.createElement('option');
+                        option.value = mascota.id_mascota;
+                        option.textContent = mascota.nombre;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar mascotas:", error));
+        }
+
+        function cargarVeterinarios() {
+            fetch('../obtencion/veterinarios_obtener.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('veterinarioSelect');
+                    data.forEach(veterinario => {
+                        const option = document.createElement('option');
+                        option.value = veterinario.id_usuario;
+                        option.textContent = veterinario.nombre;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar veterinarios:", error));
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarMascotas();
+            cargarVeterinarios();
+        });
+    </script>
+    <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

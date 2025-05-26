@@ -50,6 +50,51 @@ app.delete('/usuarios/:id', (req, res) => {
   }
 });
 
+app.get('/citas', (req, res) => {
+  try {
+    const stmt = db.prepare('SELECT * FROM citas');
+    const usuarios = stmt.all(); // .all() para múltiples resultados
+    res.json(usuarios);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
+// Eliminar usuario
+app.delete('/citas/:id', (req, res) => {
+  try {
+    const id = req.params.id;
+    const stmt = db.prepare('DELETE FROM usuarios WHERE id_cita = ?');
+    const result = stmt.run(id);
+    if (result.changes > 0) {
+      res.json({ mensaje: 'Usuario eliminado correctamente' });
+    } else {
+      res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'html', 'index.html'));
+});
+
+app.post('/', (req, res) => {
+  const { correo, contraseña } = req.body;
+
+  try {
+    const stmt = db.prepare('SELECT * FROM usuarios WHERE correo = ? AND contraseña = ?');
+    const usuario = stmt.get(correo, contraseña); // .get() devuelve un solo resultado
+
+    if (usuario) {
+      res.json({ success: true, rol: usuario.rol });
+    } else {
+      res.json({ success: false, mensaje: 'Credenciales incorrectas' });
+    }
+  } catch (error) {
+    console.error('Error en login:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 module.exports = app;

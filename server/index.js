@@ -28,7 +28,9 @@ app.get('/usuarios', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'html', 'usuarios', 'usuarios_read.html'));
 });
 
-
+app.get('/citas', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'html', 'citas', 'citas_read.html'));
+});
 
   app.listen(app.get('port'), () =>
     {

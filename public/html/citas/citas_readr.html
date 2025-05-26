@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Citas</title>
+    <link rel="stylesheet" href="../Style/read.css">
+    <link rel="stylesheet" href="../Style/menu.css" />
+
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="citas_creater.html" class="fghjkl">Agregar cita</a>
+            <input type="text" class="busqueda" id="searchCitas" placeholder="Buscar por veterinario o mascota..."
+                onkeyup="buscarCitas()">
+        </div>
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../inventario/inventario_readr.html">Inventario</a>
+                    <a href="../clientes/clientes_readr.html">Clientes</a>
+                    <a href="../citas/citas_readr.html">Citas</a>
+                    <a href="../historiales/historiales_readr.html">Historiales</a>
+                    <a href="../mascotas/mascotas_readr.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+
+        <h2>Lista de citas</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Mascota</th>
+                        <th>Veterinario</th>
+                        <th>Motivo</th>
+                    </tr>
+                </thead>
+                <tbody id="citasTabla">
+                    <!-- Aquí se cargarán los citas con JS -->
+                </tbody>
+            </table>
+            <div>
+                <a href="../recp.html " class="menu-principal">Menu</a>
+            </div>
+        </div>
+
+        <script>
+            function cargarCitas() {
+                fetch('citas_read.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tabla = document.getElementById('citasTabla');
+                        tabla.innerHTML = '';
+                        data.forEach(cita => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
+                            <td>${cita.id_cita}</td>
+                            <td>${cita.estado}</td>
+                            <td>${cita.fecha}</td>
+                            <td>${cita.hora}</td>
+                            <td>${cita.mascota}</td>
+                            <td>${cita.veterinario}</td>
+                            <td>${cita.motivo}</td>
+                        `;
+                            tabla.appendChild(fila);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar las citas:", error));
+            }
+
+            function buscarCitas() {
+                let filtro = document.getElementById("searchCitas").value.toLowerCase();
+                let filas = document.getElementById("citasTabla").getElementsByTagName("tr");
+
+                Array.from(filas).forEach(fila => {
+                    let veterinario = fila.cells[4]?.textContent.toLowerCase();
+                    let mascota = fila.cells[3]?.textContent.toLowerCase();
+                    if ((veterinario && veterinario.includes(filtro)) || (mascota && mascota.includes(filtro))) {
+                        fila.style.display = "";
+                    } else {
+                        fila.style.display = "none";
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarCitas);
+        </script>
+        <script src="../Js/auth.js" defer></script>
+</body>
+
+</html>

@@ -57,38 +57,29 @@
         <script>
             let ventas = [];
 
+            const API_URL = 'http://localhost:3000/ventas';
             function cargarVentas() {
-                fetch('http://localhost:3000/ventas') // Ajusta la URL si usas proxy o deploy
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Error al obtener ventas");
-                        }
-                        return response.json();
-                    })
+                fetch(API_URL) // Ajusta la URL si usas proxy o deploy
+                    .then(response => response.json())
                     .then(data => {
-                        ventas = data;
-                        mostrarVentas(ventas);
-                    })
-                    .catch(error => console.error("Error al cargar ventas:", error));
-            }
-
-            function mostrarVentas(data) {
-                const tabla = document.getElementById('ventasTabla');
-                tabla.innerHTML = '';
-                data.forEach(venta => {
-                    const fila = document.createElement('tr');
-                    fila.innerHTML = `
+                        const tabla = document.getElementById('ventasTabla');
+                        tabla.innerHTML = '';
+                        data.forEach(venta => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
                         <td>${venta.id_factura}</td>
                         <td>${venta.cliente_nombre}</td>
                         <td>${venta.fecha}</td>
                         <td>$${venta.total}</td>
                         <td>
-                            <a href="ventas_update.html?id=${venta.id_venta}" class="fghjkl">Editar</a>
-                            <a href="ventas_delete.html?id=${venta.id_venta}" onclick="return confirm('¿Seguro que deseas eliminar esta venta?')" class="fghjkl">Eliminar</a>
+                            <a href="ventas_update.html?id=${venta.id_factura}" class="fghjkl">Editar</a>
+                            <a href="ventas_delete.html?id=${venta.id_factura}" onclick="return confirm('¿Seguro que deseas eliminar esta venta?')" class="fghjkl">Eliminar</a>
                         </td>
                     `;
                     tabla.appendChild(fila);
                 });
+            })
+            .catch(error => console.error("Error al cargar los usuarios:", error));
             }
 
             function buscarVentas() {

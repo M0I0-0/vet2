@@ -49,13 +49,63 @@ app.delete('/usuarios/:id', (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// Obtener usuario por id para el update
+app.get('/usuarios/:id', (req, res) => {
+  try {
+    const id = req.params.id;
+    const stmt = db.prepare('SELECT * FROM usuarios WHERE id_usuario = ?');
+    const usuario = stmt.get(id); // solo un resultado
+    if (usuario) {
+      res.json(usuario);
+    } else {
+      res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// Actualizar usuario
+app.post('/usuarios_update', (req, res) => {
+  try {
+    const { id_usuario, nombre, correo, contraseña, rol } = req.body;
+
+    const stmt = db.prepare(`UPDATE usuarios
+                             SET nombre = ?, correo = ?, contraseña = ?, rol = ?
+                             WHERE id_usuario = ?`);
+
+    const result = stmt.run(nombre, correo, contraseña, rol, id_usuario);
+
+    if (result.changes > 0) {
+      // Redireccionar a la página anterior
+      const referer = req.get('Referer'); // si no hay, va a la raíz
+      res.redirect(referer);
+    } else {
+      res.status(404).send('Usuario no encontrado o sin cambios');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
+
 
 
 
 // Citas
 app.get('/citas', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM citas');
+    const stmt = db.prepare(`SELECT
+      c.id_cita,
+      c.fecha,
+      c.hora,
+      c.id_mascota,
+      c.id_veterinario,
+      c.motivo,
+      c.estado,
+      u.nombre AS veterinario_rol
+      FROM citas c
+      JOIN usuarios u ON c.id_veterinario = u.id_usuario;`);
     const citas = stmt.all(); // .all() para múltiples resultados
     res.json(citas);
   } catch (error) {
@@ -131,7 +181,16 @@ app.delete('/clientes/:id', (req, res) => {
 // HISTORIALES
 app.get('/historiales', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM historial_medico');
+    const stmt = db.prepare(`SELECT 
+    h.id_historial,
+    h.fecha,
+    h.descripcion,
+    h.tratamiento,
+    h.id_mascota,
+    m.nombre AS nombre_mascota
+FROM historial_medico h
+JOIN mascotas m ON h.id_mascota = m.id_mascota;
+`);
     const historiales = stmt.all();
     res.json(historiales);
   } catch (error) {
@@ -157,7 +216,23 @@ app.delete('/historiales/:id', (req, res) => {
 // INVENTARIO
 app.get('/inventario', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM inventario');
+    const stmt = db.prepare(`SELECT 
+    i.id_inventario,
+    i.categoria_id,
+    i.nombre_producto,
+    i.descripcion,
+    i.cantidad,
+    i.stock_minimo,
+    i.precio_unitario,
+    i.fecha_vencimiento,
+    i.notas,
+    i.fecha_registro,
+    p.nombre AS nombre_proveedor,
+    c.nombre AS nombre_categoria
+FROM inventario i
+JOIN proveedores p ON i.proveedor_id = p.id_proveedor
+JOIN categoria c ON i.categoria_id = c.id_categoria;
+`);
     const inventario = stmt.all();
     res.json(inventario);
   } catch (error) {
@@ -183,7 +258,17 @@ app.delete('/inventario/:id', (req, res) => {
 // MASCOTAS
 app.get('/mascotas', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM mascotas');
+    const stmt = db.prepare(`SELECT 
+    m.id_mascota,
+    m.nombre AS nombre_mascota,
+    m.especie,
+    m.raza,
+    m.edad,
+    m.peso,
+    c.nombre AS nombre_cliente
+FROM mascotas m
+JOIN clientes c ON m.id_cliente = c.id_cliente;
+`);
     const mascotas = stmt.all();
     res.json(mascotas);
   } catch (error) {
@@ -235,7 +320,10 @@ app.delete('/proveedores/:id', (req, res) => {
 // VENTAS
 app.get('/ventas', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM facturas');
+    const stmt = db.prepare(`SELECT f.id_factura, f.fecha, f.total, c.nombre AS cliente_nombre
+            FROM ventas f
+            JOIN clientes c ON f.id_cliente = c.id_cliente
+            order by f.id_factura asc`);
     const ventas = stmt.all();
     res.json(ventas);
   } catch (error) {
@@ -257,15 +345,6 @@ app.delete('/ventas/:id', (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
-
-
-
-
-
-
 
 
 //login

@@ -86,17 +86,17 @@
                 data.forEach(inventario => {
                     const fila = document.createElement('tr');
                     fila.innerHTML = `
-                        <td>${inventario.categoria_id}</td>
-                        <td>${inventario.nombre_producto}</td>
+                        <td>${inventario.id_inventario}</td>
+                        <td>${inventario.nombre_categoria}</td>
                         <td>${inventario.nombre_producto}</td>
                         <td>${inventario.cantidad}</td>
                         <td>${inventario.descripcion}</td>
                         <td>${inventario.stock_minimo}</td>
                         <td>${inventario.precio_unitario}</td>
                         <td>${inventario.fecha_registro}</td>
-                        <td>${inventario.fecha_vencimiento}</td>
-                        <td>${inventario.proveedor_id}</td>
-                        <td>${inventario.notas}</td>
+                        <td>${inventario.fecha_vencimiento || 'Sin fecha de vencimiento'}</td>
+                        <td>${inventario.nombre_proveedor}</td>
+                        <td>${inventario.notas || 'Sin nota'}</td>
                         <td>
                             <a href="inventario_update.html?id=${inventario.id_inventario}" class="fghjkl">Editar</a>
                             <a href="#" onclick="eliminarInventario(${inventario.id_inventario})" class="fghjkl">Eliminar</a>

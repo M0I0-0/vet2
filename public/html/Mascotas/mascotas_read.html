@@ -82,12 +82,12 @@
                     const fila = document.createElement('tr');
                     fila.innerHTML = `
                         <td>${mascota.id_mascota}</td>
-                        <td>${mascota.nombre}</td>
+                        <td>${mascota.nombre_mascota}</td>
                         <td>${mascota.especie}</td>
                         <td>${mascota.raza}</td>
                         <td>${mascota.edad}</td>
                         <td>${mascota.peso}</td>
-                        <td>${mascota.cliente_nombre}</td>
+                        <td>${mascota.nombre_cliente}</td>
                         <td>
                             <a href="mascotas_update.html?id=${mascota.id_mascota}" class="fghjkl">Editar</a>
                             <a href="#" onclick="eliminarMascota(${mascota.id_mascota})" class="fghjkl">Eliminar</a>

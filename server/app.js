@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // Conexión a la base de datos SQLite
 let db;
 try {
-  db = new Database(path.join(__dirname, '..', 'db', 'veterimid.db'), { readonly: false });
+  db = new Database(path.join(__dirname, '..', 'db', 'veterimid.sqlite'), { readonly: false });
   console.log('Conectado a la base de datos SQLite.');
 } catch (err) {
   console.error('Error al conectar a la base de datos:', err.message);

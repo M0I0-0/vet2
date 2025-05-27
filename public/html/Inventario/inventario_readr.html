@@ -57,7 +57,7 @@
             <a href="/recp" class="menu-principal">Menu</a>
         </div>
 
-        <script>
+         <script>
             const API_URL = 'http://localhost:3000/inventario';
             let inventarios = [];
 
@@ -79,20 +79,17 @@
                     const fila = document.createElement('tr');
                     fila.innerHTML = `
                         <td>${inventario.id_inventario}</td>
-                        <td>${inventario.categoria_nombre}</td>
+                        <td>${inventario.nombre_categoria}</td>
                         <td>${inventario.nombre_producto}</td>
                         <td>${inventario.cantidad}</td>
                         <td>${inventario.descripcion}</td>
                         <td>${inventario.stock_minimo}</td>
                         <td>${inventario.precio_unitario}</td>
                         <td>${inventario.fecha_registro}</td>
-                        <td>${inventario.fecha_vencimiento}</td>
-                        <td>${inventario.proveedor_nombre}</td>
-                        <td>${inventario.notas}</td>
-                        <td>
-                            <a href="inventario_update.html?id=${inventario.id_inventario}" class="fghjkl">Editar</a>
-                            <a href="#" onclick="eliminarInventario(${inventario.id_inventario})" class="fghjkl">Eliminar</a>
-                        </td>
+                        <td>${inventario.fecha_vencimiento || 'Sin fecha de vencimiento'}</td>
+                        <td>${inventario.nombre_proveedor}</td>
+                        <td>${inventario.notas || 'Sin nota'}</td>
+                        
                     `;
                     tabla.appendChild(fila);
                 });
@@ -127,7 +124,9 @@
 
             document.addEventListener('DOMContentLoaded', cargarinventario);
         </script>
+
         <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 
 </html>

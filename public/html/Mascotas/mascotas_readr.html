@@ -53,38 +53,46 @@
         <div>
             <a href="/recp" class="menu-principal">Menu</a>
         </div>
-        <script>
+           <script>
+            const API_URL = 'http://localhost:3000/mascotas';
+            let mascotas = [];
+
             function cargarMascotas() {
-                fetch('mascotas_read.php')
+                fetch(API_URL)
                     .then(response => response.json())
                     .then(data => {
-                        const tabla = document.getElementById('mascotasTabla');
-                        tabla.innerHTML = '';
-                        data.forEach(mascota => {
-                            const fila = document.createElement('tr');
-                            fila.innerHTML = `
-                           <td>${mascota.id_mascota}</td>
-                            <td>${mascota.nombre}</td>
-                            <td>${mascota.especie}</td>
-                            <td>${mascota.raza}</td>
-                            <td>${mascota.edad}</td>
-                            <td>${mascota.peso}</td>
-                            <td>${mascota.cliente_nombre}</td>
-
-                        `;
-                            tabla.appendChild(fila);
-                        });
+                        mascotas = data;
+                        mostrarMascotas(mascotas);
                     })
                     .catch(error => console.error("Error al cargar las mascotas:", error));
             }
 
+            function mostrarMascotas(data) {
+                const tabla = document.getElementById('mascotasTabla');
+                tabla.innerHTML = '';
+                data.forEach(mascota => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${mascota.id_mascota}</td>
+                        <td>${mascota.nombre_mascota}</td>
+                        <td>${mascota.especie}</td>
+                        <td>${mascota.raza}</td>
+                        <td>${mascota.edad}</td>
+                        <td>${mascota.peso}</td>
+                        <td>${mascota.nombre_cliente}</td>
+                
+                    `;
+                    tabla.appendChild(fila);
+                });
+            }
+
             function buscarMascotas() {
-                let filtro = document.getElementById("searchMascotas").value.toLowerCase();
-                let filas = document.getElementById("mascotasTabla").getElementsByTagName("tr");
+                const filtro = document.getElementById("searchMascotas").value.toLowerCase();
+                const filas = document.getElementById("mascotasTabla").getElementsByTagName("tr");
 
                 Array.from(filas).forEach(fila => {
-                    let nombreMascota = fila.cells[1]?.textContent.toLowerCase();
-                    let nombreCliente = fila.cells[6]?.textContent.toLowerCase();
+                    const nombreMascota = fila.cells[1]?.textContent.toLowerCase();
+                    const nombreCliente = fila.cells[6]?.textContent.toLowerCase();
                     if ((nombreMascota && nombreMascota.includes(filtro)) || (nombreCliente && nombreCliente.includes(filtro))) {
                         fila.style.display = "";
                     } else {
@@ -93,9 +101,28 @@
                 });
             }
 
+            function eliminarMascota(id) {
+                if (confirm("¿Seguro que deseas eliminar esta mascota?")) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("Mascota eliminada correctamente");
+                            cargarMascotas();
+                        } else {
+                            alert("Error al eliminar la mascota");
+                        }
+                    })
+                    .catch(err => console.error("Error al eliminar:", err));
+                }
+            }
+
             document.addEventListener("DOMContentLoaded", cargarMascotas);
         </script>
+
         <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 
 </html>

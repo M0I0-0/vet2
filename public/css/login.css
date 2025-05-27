@@ -1,106 +1,114 @@
 :root {
-    --primary-color: #007bff;
-    --primary-hover: #0056b3;
-    --background-color: #f4f4f4;
-    --text-color: #333;
-    --border-radius: 10px;
-    --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    --transition-speed: 0.3s ease-in-out;
-    --input-border: #ccc;
-    --input-focus-border: #007bff;
+  --primary-color: #9e197f;
+  --primary-hover: #9e197f;
+  --text-color: #333;
+  --input-bg: #f9f9f9;
+  --input-focus: #7d1465;
+  --border-radius: 10px;
+  --transition-speed: 0.3s;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: var(--background-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    color: var(--text-color);
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0d0d2b;
 }
 
-.login-container {
-    background: #ffffff;
-    padding: 35px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    animation: fadeIn var(--transition-speed);
+.container {
+  display: flex;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  background-color: white;
 }
 
-.login-container img {
-    display: block;
-    margin: 0 auto 20px;
-    max-width: 100px;
+.login-form {
+  flex: 1;
+  padding: 40px;
+  background-color: #fff;
 }
 
-.login-container h1 {
-    font-size: 1.8em;
-    margin-bottom: 20px;
-    color: black;
+.logo {
+  display: block;
+  margin: 0 auto 20px;
+  max-width: 120px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--primary-color);
 }
 
 .form-group {
-    margin-bottom: 20px;
-    text-align: left;
+  margin-bottom: 20px;
 }
 
-.form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--text-color);
 }
 
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--input-border);
-    border-radius: var(--border-radius);
-    font-size: 1em;
-    transition: var(--transition-speed);
-    background: #f9f9f9;
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  background: var(--input-bg);
+  transition: border var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-.form-group input:focus {
-    border-color: var(--input-focus-border);
-    outline: none;
-    box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
-    background: #ffffff;
+input:focus {
+  border-color: var(--input-focus);
+  outline: none;
+  box-shadow: 0 0 5px rgba(243, 80, 27, 0.5);
 }
 
-.form-group button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--primary-color);
-    color: #ffffff;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    transition: var(--transition-speed);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background var(--transition-speed), transform 0.1s;
 }
 
-.form-group button:hover {
-    background-color: var(--primary-hover);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+button:hover {
+  background-color: var(--primary-hover);
 }
 
-.form-group button:active {
-    transform: scale(0.98);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-15px); }
-    to { opacity: 1; transform: translateY(0); }
+button:active {
+  transform: scale(0.98);
 }
 
 .error {
-    color: red;
-    text-align: center;
+  color: rgb(110, 6, 100);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-image {
+  flex: 1;
+  background: #1c1c4e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de Sesión</title>
-    <link rel="stylesheet" href="css/login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión</title>
+  <link rel="stylesheet" href="css/login.css">
 </head>
-
 <body>
-    <div class="login-container">
-        <!-- Agregamos la imagen arriba del título -->
-        <img src="images/Logo.png" alt="Logo">
-        <h1>Iniciar Sesión</h1>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" id="correo" name="correo" required>
-            </div>
-            <div class="form-group">
-                <label>Contraseña:</label>
-                <input type="password" id="contraseña" name="contraseña" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Ingresar</button>
-            </div>
-            <p id="error-message" class="error"></p>
-        </form>
+  <div class="container">
+    <div class="login-form">
+      <img src="images/Logo.png" alt="Logo" class="logo">
+      <h1>Iniciar Sesión</h1>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" name="correo" required>
+        </div>
+        <div class="form-group">
+          <label for="contraseña">Contraseña</label>
+          <input type="password" id="contraseña" name="contraseña" required>
+        </div>
+        <div class="form-group">
+          <button type="submit">Ingresar</button>
+        </div>
+        <p id="error-message" class="error"></p>
+      </form>
     </div>
-    <script src="../js/login.js"></script>
+    <div class="login-image">
+      <img src="images/ilustracion.png" alt="Fondo" />
+    </div>
+  </div>
+  <script src="../js/login.js"></script>
 </body>
-
 </html>

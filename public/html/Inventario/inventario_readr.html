@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Inventario</title>
-    <link rel="stylesheet" href="../Style/read.css">
-    <link rel="stylesheet" href="../Style/menu.css" />
+    <link rel="stylesheet" href="../../css/read.css">
+    <link rel="stylesheet" href="../../css/menu.css">
 </head>
 
 <body>
@@ -54,63 +54,80 @@
             </table>
         </div>
         <div>
-            <a href="../recp.html " class="menu-principal">Menu</a>
+            <a href="/recp" class="menu-principal">Menu</a>
         </div>
 
         <script>
-            let inventarios = []; // Array para almacenar los datos de inventario
+            const API_URL = 'http://localhost:3000/inventario';
+            let inventarios = [];
 
             function cargarinventario() {
-                fetch('inventario_read.php')
-                    .then(response => response.json())
+                fetch(API_URL)
+                    .then(res => res.json())
                     .then(data => {
-                        inventarios = data; // Guardamos los datos en el array
-                        mostrarInventarios(inventarios); // Llamamos a la función que muestra los inventarios
+                        inventarios = data;
+                        mostrarInventarios(data);
                     })
-                    .catch(error => console.error("Error al cargar los inventarios:", error));
+                    .catch(err => console.error('Error al cargar los inventarios:', err));
             }
 
-            // Función para mostrar los inventarios en la tabla
             function mostrarInventarios(data) {
                 const tabla = document.getElementById('inventarioTabla');
-                tabla.innerHTML = ''; // Limpiamos la tabla antes de volver a llenarla
+                tabla.innerHTML = '';
+
                 data.forEach(inventario => {
                     const fila = document.createElement('tr');
-
                     fila.innerHTML = `
-<td>${inventario.id_inventario}</td>
-<td>${inventario.categoria_nombre}</td>
-<td>${inventario.nombre_producto}</td>
-<td>${inventario.cantidad}</td>
-<td>${inventario.descripcion}</td>
-<td>${inventario.stock_minimo}</td>
-<td>${inventario.precio_unitario}</td>
-<td>${inventario.fecha_registro}/td>
-<td>${inventario.fecha_vencimiento}</td>
-<td>${inventario.proveedor_nombre}</td>
-<td>${inventario.notas}</td>
-
-`;
+                        <td>${inventario.id_inventario}</td>
+                        <td>${inventario.categoria_nombre}</td>
+                        <td>${inventario.nombre_producto}</td>
+                        <td>${inventario.cantidad}</td>
+                        <td>${inventario.descripcion}</td>
+                        <td>${inventario.stock_minimo}</td>
+                        <td>${inventario.precio_unitario}</td>
+                        <td>${inventario.fecha_registro}</td>
+                        <td>${inventario.fecha_vencimiento}</td>
+                        <td>${inventario.proveedor_nombre}</td>
+                        <td>${inventario.notas}</td>
+                        <td>
+                            <a href="inventario_update.html?id=${inventario.id_inventario}" class="fghjkl">Editar</a>
+                            <a href="#" onclick="eliminarInventario(${inventario.id_inventario})" class="fghjkl">Eliminar</a>
+                        </td>
+                    `;
                     tabla.appendChild(fila);
                 });
             }
 
-
-            // Función para filtrar los inventarios según el término de búsqueda
             function buscarInventario() {
-                const input = document.getElementById('searchInput');
-                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                const resultados = inventarios.filter(inventario => {
-                    return inventario.nombre_producto.toLowerCase().includes(filtro) ||
-                        inventario.categoria_nombre.toLowerCase().includes(filtro) ||
-                        inventario.descripcion.toLowerCase().includes(filtro);
-                });
-                mostrarInventarios(resultados); // Mostramos los inventarios filtrados
+                const filtro = document.getElementById('searchInput').value.toLowerCase();
+                const filtrados = inventarios.filter(i =>
+                    i.nombre_producto.toLowerCase().includes(filtro) ||
+                    i.categoria_nombre.toLowerCase().includes(filtro) ||
+                    i.descripcion.toLowerCase().includes(filtro)
+                );
+                mostrarInventarios(filtrados);
             }
 
-            document.addEventListener("DOMContentLoaded", cargarinventario);
+            function eliminarInventario(id) {
+                if (confirm('¿Seguro que deseas eliminar este inventario?')) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            alert('Inventario eliminado correctamente');
+                            cargarinventario();
+                        } else {
+                            alert('Error al eliminar inventario');
+                        }
+                    })
+                    .catch(err => console.error('Error al eliminar:', err));
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', cargarinventario);
         </script>
-        <!--<script src="../Js/auth.js" defer></script>-->
+        <script src="../Js/auth.js" defer></script>
 </body>
 
 </html>

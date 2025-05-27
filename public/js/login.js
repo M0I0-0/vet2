@@ -20,11 +20,11 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         if (data.rol === 'Administrador') {
             window.location.href = '/admin';
         } else if (data.rol === 'Recepcionista') {
-            window.location.href = 'recp.html';
+            window.location.href = '/recp';
         } else if (data.rol === 'Veterinario') {
-            window.location.href = 'vet.html';
+            window.location.href = '/vet';
         } else if (data.rol === 'Contador') {
-            window.location.href = 'conta.html';
+            window.location.href = '/conta';
         } else {
             alert('Rol no reconocido.');
         }

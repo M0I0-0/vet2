@@ -52,48 +52,61 @@
             <a href="/vet" class="menu-principal">Menu</a>
         </div>
 
-        <script>
-            let historiales = []; // Array para almacenar los datos de categoria
+ <script>
+            const API_URL = 'http://localhost:3000/historiales';
+            let historiales = [];
 
-            function cargarhistorial() {
-                fetch('historiales_read.php')
+            function cargarHistorial() {
+                fetch(API_URL)
                     .then(response => response.json())
                     .then(data => {
-                        historiales = data; // Guardamos los datos en el array
-                        mostrarhistorial(historiales); // Llamamos a la función que muestra los categorias
+                        historiales = data;
+                        mostrarHistorial(historiales);
                     })
-                    .catch(error => console.error("Error al cargar los categorias:", error));
+                    .catch(error => console.error("Error al cargar los historiales:", error));
             }
 
-            function mostrarhistorial(data) {
+            function mostrarHistorial(data) {
                 const tabla = document.getElementById('historialTabla');
                 tabla.innerHTML = '';
                 data.forEach(historial => {
                     const fila = document.createElement('tr');
-
                     fila.innerHTML = `
-                            <td>${historial.id_historial}</td>
-                            <td>${historial.mascota}</td>
-                            <td>${historial.fecha}</td>
-                            <td>${historial.descripcion}</td>
-                            <td>${historial.tratamiento}</td>
-                        `;
+                        <td>${historial.id_historial}</td>
+                        <td>${historial.nombre_mascota}</td>
+                        <td>${historial.fecha}</td>
+                        <td>${historial.descripcion}</td>
+                        <td>${historial.tratamiento}</td>
+                    
+                    `;
                     tabla.appendChild(fila);
                 });
             }
 
-            function buscarhistorial() {
-                const input = document.getElementById('searchInput');
-                const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                const resultados = historiales.filter(historial => {
-                    return historial.mascota.toLowerCase().includes(filtro);
-                });
-                mostrarhistorial(resultados); // Mostramos los categorias filtrados
+            function buscarHistorial() {
+                const filtro = document.getElementById("searchInput").value.toLowerCase();
+                const resultados = historiales.filter(h => h.mascota.toLowerCase().includes(filtro));
+                mostrarHistorial(resultados);
             }
 
-            document.addEventListener("DOMContentLoaded", cargarhistorial);
+            function eliminarHistorial(id) {
+                if (confirm('¿Seguro que deseas eliminar este historial?')) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        alert("Historial eliminado correctamente.");
+                        cargarHistorial();
+                    })
+                    .catch(error => console.error("Error al eliminar historial:", error));
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", cargarHistorial);
         </script>
         <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 
 </html>

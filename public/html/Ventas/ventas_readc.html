@@ -45,47 +45,42 @@
 <div>
     <a href="/conta" class="menu-principal">Menu</a>
 </div>
-    <script>
-        let ventas = []; // Array para almacenar los datos de inventario
+      <script>
+            let ventas = [];
 
-        function cargarventas() {
-            fetch('ventas_read.php')
-                .then(response => response.json())
-                .then(data => {
-                    ventas = data; // Guardamos los datos en el array
-                    mostrarventas(ventas); // Llamamos a la función que muestra los inventarios
-                })
-                .catch(error => console.error("Error al cargar las ventas:", error));
-        }
+            const API_URL = 'http://localhost:3000/ventas';
+            function cargarVentas() {
+                fetch(API_URL) // Ajusta la URL si usas proxy o deploy
+                    .then(response => response.json())
+                    .then(data => {
+                        const tabla = document.getElementById('ventasTabla');
+                        tabla.innerHTML = '';
+                        data.forEach(venta => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
+                        <td>${venta.id_factura}</td>
+                        <td>${venta.cliente_nombre}</td>
+                        <td>${venta.fecha}</td>
+                        <td>$${venta.total}</td>
+                    `;
+                    tabla.appendChild(fila);
+                });
+            })
+            .catch(error => console.error("Error al cargar los usuarios:", error));
+            }
 
-        function mostrarventas(data) {
-                    const tabla = document.getElementById('ventasTabla');
-                    tabla.innerHTML = '';
-                    data.forEach(venta => {
-                        const fila = document.createElement('tr');
-                        
-                        fila.innerHTML = `
-                            <td>${venta.id_factura}</td>
-                            <td>${venta.cliente_nombre}</td>
-                            <td>${venta.fecha}</td>
-                            <td>${venta.total}</td>
-                
-                        `;
-                        tabla.appendChild(fila);
-                    });
-                }
+            function buscarVentas() {
+                const filtro = document.getElementById("searchInput").value.toLowerCase();
+                const resultados = ventas.filter(venta =>
+                    venta.cliente_nombre.toLowerCase().includes(filtro)
+                );
+                mostrarVentas(resultados);
+            }
 
-                function buscarVentas() {
-                    const input = document.getElementById('searchInput');
-                    const filtro = input.value.toLowerCase(); // Convertimos la búsqueda a minúsculas
-                    const resultados = ventas.filter(venta => {
-                        return venta.cliente_nombre.toLowerCase().includes(filtro);
-                    });
-                    mostrarventas(resultados); // Mostramos los inventarios filtrados
-                }
+            document.addEventListener("DOMContentLoaded", cargarVentas);
+        </script>
 
-        document.addEventListener("DOMContentLoaded", cargarventas);
-    </script>
-    <script src="../Js/auth.js" defer></script>
+        <script src="../Js/auth.js" defer></script>
+    </div>
 </body>
 </html>

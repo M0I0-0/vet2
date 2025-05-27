@@ -1,0 +1,134 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario</title>
+    <link rel="stylesheet" href="../../css/read.css">
+    <link rel="stylesheet" href="../../css/menu.css">
+</head>
+
+<body>
+    <div class="card-td">
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="inventario_createc.html" class="fghjkl">Agregar al inventario</a>
+            <input type="text" class="busqueda" id="searchInput" onkeyup="buscarInventario()"
+                placeholder="Buscar en el inventario...">
+        </div>
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="../inventario/inventario_readr.html">Inventario</a>
+                    <a href="../clientes/clientes_readr.html">Clientes</a>
+                    <a href="../citas/citas_readr.html">Citas</a>
+                    <a href="../historiales/historiales_readr.html">Historiales</a>
+                    <a href="../mascotas/mascotas_readr.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+        <h2>Lista del inventario</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Categoria</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Descripcion</th>
+                        <th>Stock minimo</th>
+                        <th>Precio unitario</th>
+                        <th>Fecha registro</th>
+                        <th>Fecha vencimiento</th>
+                        <th>Proveedor</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody id="inventarioTabla">
+                    <!-- Aquí se cargarán los inventario con JS -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="/conta" class="menu-principal">Menu</a>
+        </div>
+
+         <script>
+            const API_URL = 'http://localhost:3000/inventario';
+            let inventarios = [];
+
+            function cargarinventario() {
+                fetch(API_URL)
+                    .then(res => res.json())
+                    .then(data => {
+                        inventarios = data;
+                        mostrarInventarios(data);
+                    })
+                    .catch(err => console.error('Error al cargar los inventarios:', err));
+            }
+
+            function mostrarInventarios(data) {
+                const tabla = document.getElementById('inventarioTabla');
+                tabla.innerHTML = '';
+
+                data.forEach(inventario => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${inventario.id_inventario}</td>
+                        <td>${inventario.nombre_categoria}</td>
+                        <td>${inventario.nombre_producto}</td>
+                        <td>${inventario.cantidad}</td>
+                        <td>${inventario.descripcion}</td>
+                        <td>${inventario.stock_minimo}</td>
+                        <td>${inventario.precio_unitario}</td>
+                        <td>${inventario.fecha_registro}</td>
+                        <td>${inventario.fecha_vencimiento || 'Sin fecha de vencimiento'}</td>
+                        <td>${inventario.nombre_proveedor}</td>
+                        <td>${inventario.notas || 'Sin nota'}</td>
+                        
+                    `;
+                    tabla.appendChild(fila);
+                });
+            }
+
+            function buscarInventario() {
+                const filtro = document.getElementById('searchInput').value.toLowerCase();
+                const filtrados = inventarios.filter(i =>
+                    i.nombre_producto.toLowerCase().includes(filtro) ||
+                    i.categoria_nombre.toLowerCase().includes(filtro) ||
+                    i.descripcion.toLowerCase().includes(filtro)
+                );
+                mostrarInventarios(filtrados);
+            }
+
+            function eliminarInventario(id) {
+                if (confirm('¿Seguro que deseas eliminar este inventario?')) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            alert('Inventario eliminado correctamente');
+                            cargarinventario();
+                        } else {
+                            alert('Error al eliminar inventario');
+                        }
+                    })
+                    .catch(err => console.error('Error al eliminar:', err));
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', cargarinventario);
+        </script>
+
+        <script src="../Js/auth.js" defer></script>
+    </div>
+</body>
+
+</html>

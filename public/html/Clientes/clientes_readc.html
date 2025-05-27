@@ -52,40 +52,54 @@
         <div>
             <a href="/conta" class="menu-principal">Menu</a>
         </div>
-        <script>
+          <script>
+            const API_URL = 'http://localhost:3000/clientes';
+            let clientes = [];
+
             function cargarClientes() {
-                fetch('clientes_read.php')
+                fetch(API_URL)
                     .then(response => response.json())
                     .then(data => {
-                        const tabla = document.getElementById('clientesTabla');
-                        tabla.innerHTML = '';
-                        data.forEach(cliente => {
-                            const fila = document.createElement('tr');
-                            fila.innerHTML = `
-                            <td>${cliente.id_cliente}</td>
-                            <td>${cliente.nombre}</td>
-                            <td>${cliente.correo}</td>
-                            <td>${cliente.telefono}</td>
-                            <td>${cliente.direccion}</td>
-                        `;
-                            tabla.appendChild(fila);
-                        });
+                        clientes = data;
+                        mostrarClientes(clientes);
                     })
                     .catch(error => console.error("Error al cargar los clientes:", error));
             }
 
-            function buscarClientes() {
-                let filtro = document.getElementById("searchClientes").value.toLowerCase();
-                let filas = document.getElementById("clientesTabla").getElementsByTagName("tr");
-
-                Array.from(filas).forEach(fila => {
-                    let nombre = fila.cells[1]?.textContent.toLowerCase();
-                    if (nombre && nombre.includes(filtro)) {
-                        fila.style.display = "";
-                    } else {
-                        fila.style.display = "none";
-                    }
+            function mostrarClientes(data) {
+                const tabla = document.getElementById('clientesTabla');
+                tabla.innerHTML = '';
+                data.forEach(cliente => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${cliente.id_cliente}</td>
+                        <td>${cliente.nombre}</td>
+                        <td>${cliente.correo}</td>
+                        <td>${cliente.telefono}</td>
+                        <td>${cliente.direccion}</td>
+                    `;
+                    tabla.appendChild(fila);
                 });
+            }
+
+            function buscarClientes() {
+                const filtro = document.getElementById("searchClientes").value.toLowerCase();
+                const resultados = clientes.filter(cliente => cliente.nombre.toLowerCase().includes(filtro));
+                mostrarClientes(resultados);
+            }
+
+            function eliminarCliente(id) {
+                if (confirm("¿Seguro que deseas eliminar este cliente?")) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        alert("Cliente eliminado correctamente.");
+                        cargarClientes();
+                    })
+                    .catch(error => console.error("Error al eliminar el cliente:", error));
+                }
             }
 
             document.addEventListener("DOMContentLoaded", cargarClientes);

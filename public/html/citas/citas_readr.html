@@ -55,47 +55,46 @@
             </div>
         </div>
 
-        <script>
-            function cargarCitas() {
-                fetch('citas_read.php')
-                    .then(response => response.json())
-                    .then(data => {
-                        const tabla = document.getElementById('citasTabla');
-                        tabla.innerHTML = '';
-                        data.forEach(cita => {
-                            const fila = document.createElement('tr');
-                            fila.innerHTML = `
+            <script>
+        const API_URL = 'http://localhost:3000/citas';
+
+        function cargarCitas() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    const tabla = document.getElementById('citasTabla');
+                    tabla.innerHTML = '';
+                    data.forEach(cita => {
+                        const fila = document.createElement('tr');
+                        fila.innerHTML = `
                             <td>${cita.id_cita}</td>
                             <td>${cita.estado}</td>
                             <td>${cita.fecha}</td>
                             <td>${cita.hora}</td>
-                            <td>${cita.mascota}</td>
-                            <td>${cita.veterinario}</td>
+                            <td>${cita.id_mascota}</td>
+                            <td>${cita.veterinario_rol}</td>
                             <td>${cita.motivo}</td>
                         `;
-                            tabla.appendChild(fila);
-                        });
-                    })
-                    .catch(error => console.error("Error al cargar las citas:", error));
-            }
+                        tabla.appendChild(fila);
+                    });
+                })
+                .catch(error => console.error("Error al cargar las citas:", error));
+        }
 
-            function buscarCitas() {
-                let filtro = document.getElementById("searchCitas").value.toLowerCase();
-                let filas = document.getElementById("citasTabla").getElementsByTagName("tr");
+        function buscarCitas() {
+            const filtro = document.getElementById("searchCitas").value.toLowerCase();
+            const filas = document.querySelectorAll("#citasTabla tr");
 
-                Array.from(filas).forEach(fila => {
-                    let veterinario = fila.cells[4]?.textContent.toLowerCase();
-                    let mascota = fila.cells[3]?.textContent.toLowerCase();
-                    if ((veterinario && veterinario.includes(filtro)) || (mascota && mascota.includes(filtro))) {
-                        fila.style.display = "";
-                    } else {
-                        fila.style.display = "none";
-                    }
-                });
-            }
+            filas.forEach(fila => {
+                const mascota = fila.cells[4]?.textContent.toLowerCase();
+                const veterinario = fila.cells[5]?.textContent.toLowerCase();
+                const coincide = mascota.includes(filtro) || veterinario.includes(filtro);
+                fila.style.display = coincide ? "" : "none";
+            });
+        }
 
-            document.addEventListener("DOMContentLoaded", cargarCitas);
-        </script>
+        document.addEventListener("DOMContentLoaded", cargarCitas);
+    </script>
         <script src="../Js/auth.js" defer></script>
 </body>
 

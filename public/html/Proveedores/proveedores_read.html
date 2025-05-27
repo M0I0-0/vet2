@@ -90,11 +90,25 @@
                         <td>${proveedor.direccion}</td>
                         <td>
                             <a href="proveedores_update.html?id=${proveedor.id_proveedor}" class="fghjkl">Editar</a>
-                            <a href="proveedores_delete.html?id=${proveedor.id_proveedor}" onclick="return confirm('¿Seguro que deseas eliminar este proveedor?')" class="fghjkl">Eliminar</a>
+                            <a href="#" onclick="eliminarProveedor(${proveedor.id_proveedor})" class="fghjkl">Eliminar</a>
                         </td>
                     `;
                     tabla.appendChild(fila);
                 });
+            }
+
+             function eliminarProveedor(id) {
+                if (confirm("¿Seguro que deseas eliminar este proveedor?")) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        alert("Proveedor eliminado exitosamente.");
+                        cargarProveedores();
+                    })
+                    .catch(error => console.error("Error al eliminar Proveedor:", error));
+                }
             }
 
             function buscarProveedores() {

@@ -4,69 +4,90 @@
     <meta charset="UTF-8">
     <title>Ventas</title>
     <link rel="stylesheet" href="../../css/read.css">
-    <link rel="stylesheet" href="../../css/menu.css"/>
-
+    <link rel="stylesheet" href="../../css/menu.css" />
 </head>
 <body>
     <div class="card-td">
-    <div class="btn-menu">
-        <label for="btn-menu">☰</label>
-        <a href="ventas_createc.html"class="fghjkl">Agregar venta</a>
-        <input type="text" class = "busqueda" id="searchInput" onkeyup="buscarVentas()" placeholder="Buscar por cliente...">
-    </div>
- <!-- Menú lateral -->
- <input type="checkbox" id="btn-menu">
- <div class="container-menu">
-     <div class="cont-menu">
-         <label for="btn-menu" class="close-btn">✖️</label>
-        <nav>
-                <a href="/html/Proveedores/proveedores_readc.html">Proveedores</a>
-                <a href="/html/Clientes/clientes_readc.html">Clientes</a>
-                <a href="/html/Ventas/ventas_readc.html">Ventas</a>
-        </nav>
-     </div>
- </div>
-    <h2>Lista de ventas</h2>
-    <div class="input-container">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody id="ventasTabla">
-            <!-- Aquí se cargarán los ventas con JS -->
-        </tbody>
-    </table>
-</div>
-<div>
-    <a href="/conta" class="menu-principal">Menu</a>
-</div>
-      <script>
+        <div class="btn-menu">
+            <label for="btn-menu">☰</label>
+            <a href="ventas_create.html" class="fghjkl">Agregar venta</a>
+            <input type="text" class="busqueda" id="searchInput" onkeyup="buscarVentas()" placeholder="Buscar por cliente...">
+        </div>
+
+        <!-- Menú lateral -->
+        <input type="checkbox" id="btn-menu">
+        <div class="container-menu">
+            <div class="cont-menu">
+                <label for="btn-menu" class="close-btn">✖️</label>
+                <nav>
+                    <a href="/html/usuarios/usuarios_read.html">Usuarios</a>
+                    <a href="/html/Inventario/inventario_read.html">Inventario</a>
+                    <a href="/html/Proveedores/proveedores_read.html">Proveedores</a>
+                    <a href="/html/Clientes/clientes_read.html">Clientes</a>
+                    <a href="/html/citas/citas_read.html">Citas</a>
+                    <a href="/html/Categorias/categorias_read.html">Categorías</a>
+                    <a href="/html/Ventas/ventas_read.html">Ventas</a>
+                    <a href="/html/Historiales/historiales_read.html">Historiales</a>
+                    <a href="/html/Mascotas/mascotas_read.html">Mascotas</a>
+                </nav>
+            </div>
+        </div>
+
+        <h2>Lista de ventas</h2>
+        <div class="input-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ventasTabla">
+                    <!-- Aquí se cargarán las ventas con JS -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="/conta" class="menu-principal">Menú</a>
+        </div>
+
+        <script>
             let ventas = [];
 
             const API_URL = 'http://localhost:3000/ventas';
+
             function cargarVentas() {
-                fetch(API_URL) // Ajusta la URL si usas proxy o deploy
+                fetch(API_URL)
                     .then(response => response.json())
                     .then(data => {
-                        const tabla = document.getElementById('ventasTabla');
-                        tabla.innerHTML = '';
-                        data.forEach(venta => {
-                            const fila = document.createElement('tr');
-                            fila.innerHTML = `
+                        ventas = data;
+                        mostrarVentas(ventas);
+                    })
+                    .catch(error => console.error("Error al cargar las ventas:", error));
+            }
+
+            function mostrarVentas(data) {
+                const tabla = document.getElementById('ventasTabla');
+                tabla.innerHTML = '';
+                data.forEach(venta => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
                         <td>${venta.id_factura}</td>
                         <td>${venta.cliente_nombre}</td>
+                        <td>${venta.nombre_producto}</td>
                         <td>${venta.fecha}</td>
                         <td>$${venta.total}</td>
+                        <td>
+                            <a href="ventas_update.html?id=${venta.id_factura}" class="fghjkl">Editar</a>
+                            <a href="#" onclick="eliminarVenta(${venta.id_factura})" class="fghjkl">Eliminar</a>
+                        </td>
                     `;
                     tabla.appendChild(fila);
                 });
-            })
-            .catch(error => console.error("Error al cargar los usuarios:", error));
             }
 
             function buscarVentas() {
@@ -77,9 +98,25 @@
                 mostrarVentas(resultados);
             }
 
+            function eliminarVenta(id) {
+                if (confirm("¿Seguro que deseas eliminar esta venta?")) {
+                    fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("Venta eliminada correctamente");
+                            cargarVentas();
+                        } else {
+                            alert("Error al eliminar la venta");
+                        }
+                    })
+                    .catch(err => console.error("Error al eliminar:", err));
+                }
+            }
+
             document.addEventListener("DOMContentLoaded", cargarVentas);
         </script>
-
         <script src="../Js/auth.js" defer></script>
     </div>
 </body>

@@ -92,8 +92,10 @@ app.get('/citas', (req, res) => {
       c.id_veterinario,
       c.motivo,
       c.estado,
+      m.nombre AS nombre_mascota,
       u.nombre AS veterinario_rol
       FROM citas c
+      JOIN mascotas m ON c.id_mascota = m.id_mascota
       JOIN usuarios u ON c.id_veterinario = u.id_usuario;`);
     const citas = stmt.all(); // .all() para múltiples resultados
     res.json(citas);
@@ -439,73 +441,69 @@ JOIN clientes c ON m.id_cliente = c.id_cliente;
     res.status(500).json({ error: error.message });
   }
 });
-app.get('/inventario/:id', (req, res) => {
+
+// Obtener una mascota por ID
+app.get('/mascotas/:id', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM inventario WHERE id_inventario = ?');
-    const producto = stmt.get(req.params.id);
-    producto ? res.json(producto) : res.status(404).json({ mensaje: 'Producto no encontrado' });
+    const id = req.params.id;
+    const stmt = db.prepare('SELECT * FROM mascotas WHERE id_mascota = ?');
+    const mascota = stmt.get(id);
+    if (mascota) {
+      res.json(mascota);
+    } else {
+      res.status(404).json({ mensaje: 'Mascota no encontrada' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.post('/inventario_create', (req, res) => {
-  const {
-    categoria_id, proveedor_id, nombre_producto, descripcion,
-    cantidad, stock_minimo, precio_unitario, fecha_vencimiento,
-    notas, fecha_registro
-  } = req.body;
-
+// Crear nueva mascota
+app.post('/mascotas', (req, res) => {
+  const { nombre, especie, raza, edad, peso, id_cliente } = req.body;
   try {
     const stmt = db.prepare(`
-      INSERT INTO inventario (
-        categoria_id, proveedor_id, nombre_producto, descripcion,
-        cantidad, stock_minimo, precio_unitario, fecha_vencimiento,
-        notas, fecha_registro
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO mascotas (nombre, especie, raza, edad, peso, id_cliente)
+      VALUES (?, ?, ?, ?, ?, ?)
     `);
-    const info = stmt.run(
-      categoria_id, proveedor_id, nombre_producto, descripcion,
-      cantidad, stock_minimo, precio_unitario, fecha_vencimiento,
-      notas, fecha_registro
-    );
-    res.json({ message: 'Producto agregado', id: info.lastInsertRowid });
+    const info = stmt.run(nombre, especie, raza, edad, peso, id_cliente);
+    res.json({ message: 'Mascota registrada', id: info.lastInsertRowid });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.post('/inventario_update', (req, res) => {
-  const {
-    id_inventario, categoria_id, proveedor_id, nombre_producto, descripcion,
-    cantidad, stock_minimo, precio_unitario, fecha_vencimiento,
-    notas, fecha_registro
-  } = req.body;
-
+// Actualizar mascota existente
+app.post('/mascotas_update', (req, res) => {
+  const { id_mascota, nombre, especie, raza, edad, peso, id_cliente } = req.body;
   try {
     const stmt = db.prepare(`
-      UPDATE inventario SET
-        categoria_id = ?, proveedor_id = ?, nombre_producto = ?, descripcion = ?,
-        cantidad = ?, stock_minimo = ?, precio_unitario = ?, fecha_vencimiento = ?,
-        notas = ?, fecha_registro = ?
-      WHERE id_inventario = ?
+      UPDATE mascotas
+      SET nombre = ?, especie = ?, raza = ?, edad = ?, peso = ?, id_cliente = ?
+      WHERE id_mascota = ?
     `);
-    const result = stmt.run(
-      categoria_id, proveedor_id, nombre_producto, descripcion,
-      cantidad, stock_minimo, precio_unitario, fecha_vencimiento,
-      notas, fecha_registro, id_inventario
-    );
-    result.changes > 0 ? res.redirect(req.get('Referer') || '/') : res.status(404).send('Inventario no encontrado');
-  } catch (err) {
-    res.status(500).send(err.message);
+    const result = stmt.run(nombre, especie, raza, edad, peso, id_cliente, id_mascota);
+    if (result.changes > 0) {
+      const referer = req.get('Referer');
+      res.redirect(referer || '/mascotas');
+    } else {
+      res.status(404).send('Mascota no encontrada o sin cambios');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 });
 
-app.delete('/inventario/:id', (req, res) => {
+// Eliminar mascota
+app.delete('/mascotas/:id', (req, res) => {
   try {
-    const stmt = db.prepare('DELETE FROM inventario WHERE id_inventario = ?');
+    const stmt = db.prepare('DELETE FROM mascotas WHERE id_mascota = ?');
     const result = stmt.run(req.params.id);
-    result.changes > 0 ? res.json({ mensaje: 'Producto eliminado' }) : res.status(404).json({ mensaje: 'Producto no encontrado' });
+    if (result.changes > 0) {
+      res.json({ mensaje: 'Mascota eliminada correctamente' });
+    } else {
+      res.status(404).json({ mensaje: 'Mascota no encontrada' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -533,7 +531,7 @@ app.get('/proveedores/:id', (req, res) => {
   }
 });
 
-app.post('/proveedores', (req, res) => {
+app.post('/proveedores_create', (req, res) => {
   const { nombre, contacto, telefono, correo, direccion } = req.body;
   try {
     const stmt = db.prepare(`
@@ -575,12 +573,20 @@ app.delete('/proveedores/:id', (req, res) => {
 // ---------------------------------------------------------------------
 
 // VENTAS
-app.get('/ventas', (req, res) => {
+app.get('/ventas', (req, res) => { 
   try {
-    const stmt = db.prepare(`SELECT f.id_factura, f.fecha, f.total, c.nombre AS cliente_nombre
-            FROM ventas f
-            JOIN clientes c ON f.id_cliente = c.id_cliente
-            order by f.id_factura asc`);
+    const stmt = db.prepare(`
+      SELECT 
+        f.id_factura,
+        c.nombre AS cliente_nombre,
+        i.nombre_producto,
+        f.fecha,
+        f.total
+      FROM ventas f
+      JOIN inventario i ON f.id_inventario = i.id_inventario
+      JOIN clientes c ON f.id_cliente = c.id_cliente
+      ORDER BY f.id_factura ASC
+    `);
     const ventas = stmt.all();
     res.json(ventas);
   } catch (error) {
@@ -590,35 +596,54 @@ app.get('/ventas', (req, res) => {
 
 app.get('/ventas/:id', (req, res) => {
   try {
-    const stmt = db.prepare('SELECT * FROM ventas WHERE id_factura = ?');
-    const venta = stmt.get(req.params.id);
-    venta ? res.json(venta) : res.status(404).json({ mensaje: 'Venta no encontrada' });
+    const id = req.params.id;
+    const stmt = db.prepare(`SELECT * FROM ventas WHERE id_factura = ?`);
+    const venta = stmt.get(id);
+    if (venta) {
+      res.json(venta);
+    } else {
+      res.status(404).json({ error: 'Venta no encontrada' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+
 app.post('/ventas', (req, res) => {
-  const { id_cliente, fecha, total } = req.body;
+  const { id_cliente, id_inventario, fecha, total } = req.body;
   try {
-    const stmt = db.prepare('INSERT INTO ventas (id_cliente, fecha, total) VALUES (?, ?, ?)');
-    const info = stmt.run(id_cliente, fecha, total);
+    const stmt = db.prepare(`
+      INSERT INTO ventas (id_cliente, id_inventario, fecha, total)
+      VALUES (?, ?, ?, ?)
+    `);
+    const info = stmt.run(id_cliente, id_inventario, fecha, total);
     res.json({ message: 'Venta registrada', id: info.lastInsertRowid });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+
 app.post('/ventas_update', (req, res) => {
-  const { id_factura, id_cliente, fecha, total } = req.body;
+  const { id_factura, id_cliente, id_inventario, fecha, total } = req.body;
   try {
-    const stmt = db.prepare(`UPDATE ventas SET id_cliente = ?, fecha = ?, total = ? WHERE id_factura = ?`);
-    const result = stmt.run(id_cliente, fecha, total, id_factura);
-    result.changes > 0 ? res.redirect(req.get('Referer') || '/') : res.status(404).send('Venta no encontrada');
-  } catch (err) {
-    res.status(500).send(err.message);
+    const stmt = db.prepare(`
+      UPDATE ventas
+      SET id_cliente = ?, id_inventario = ?, fecha = ?, total = ?
+      WHERE id_factura = ?
+    `);
+    const result = stmt.run(id_cliente, id_inventario, fecha, total, id_factura);
+    if (result.changes > 0) {
+      res.redirect(req.get('Referer'));
+    } else {
+      res.status(404).send('Venta no encontrada o sin cambios');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 });
+
 
 app.delete('/ventas/:id', (req, res) => {
   try {

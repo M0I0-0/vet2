@@ -10,7 +10,7 @@
 <body>
   <div class="cont">
     <h1>Nuevo producto</h1>
-    <form action="/inventario_create" method="post">
+    <form id="formularioInventario">
 
       <div class="input-container">
         <label>Categoría:</label>
@@ -50,7 +50,7 @@
 
       <div class="button-container">
         <input type="submit" value="Guardar">
-        <a href="inventario_read.html">Regresar</a>
+        <a href="#" onclick="regresar()">Regresar</a>
       </div>
     </form>
   </div>
@@ -88,12 +88,68 @@
         .catch(err => console.error("Error al cargar proveedores:", err));
     }
 
+    // Función para redirigir según rol
+    function regresar() {
+      const usuario = sessionStorage.getItem('usuario');
+      if (!usuario) {
+        alert('No hay usuario logueado.');
+        window.location.href = '/login';
+        return;
+      }
+      const { rol } = JSON.parse(usuario);
+      switch (rol) {
+        case 'Administrador':
+          window.location.href = 'inventario_read.html';
+          break;
+        case 'Recepcionista':
+          window.location.href = 'inventario_readr.html';
+          break;
+        case 'Veterinario':
+          window.location.href = 'inventario_readv.html';
+          break;
+        case 'Contador':
+          window.location.href = 'inventario_readc.html';
+          break;
+        default:
+          alert('Rol no reconocido, regresando al menú principal');
+          window.location.href = '/admin';
+      }
+    }
+
+    // Controlar el envío del formulario con fetch
+    document.getElementById('formularioInventario').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const res = await fetch('/inventario_create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          alert('Producto guardado correctamente');
+          regresar();
+        } else {
+          alert('Error al guardar el producto');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error al conectar con el servidor');
+      }
+    });
+
+    // Cargar datos al cargar la página
     document.addEventListener("DOMContentLoaded", () => {
       cargarCategorias();
       cargarProveedores();
     });
   </script>
 
-  <script src="../Js/auth.js" defer></script>
+  <script src="../../js/auth.js" defer></script>
 </body>
+
 </html>

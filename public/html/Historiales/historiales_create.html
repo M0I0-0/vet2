@@ -11,12 +11,9 @@
   <div class="cont">
     <h1>Nuevo historial</h1>
 
-    <!-- ✅ Ruta corregida -->
-    <form action="/historial_medico_create" method="post">
-
+    <form id="formularioHistorial">
       <div class="input-container">
         <label>Mascota:</label>
-        <!-- ✅ Name corregido -->
         <select name="id_mascota" id="mascotaSelect" required>
           <option value="">Selecciona una mascota</option>
         </select><br>
@@ -33,13 +30,13 @@
 
       <div class="button-container">
         <input type="submit" value="Guardar">
-        <a href="historiales_read.html">Regresar</a>
+        <a href="#" onclick="regresar()">Regresar</a>
       </div>
     </form>
   </div>
 
-  <!-- ✅ Script corregido -->
   <script>
+    // Cargar mascotas
     function cargarMascotas() {
       fetch('/mascotas')
         .then(response => response.json())
@@ -55,10 +52,64 @@
         .catch(error => console.error("Error al cargar mascotas:", error));
     }
 
-    document.addEventListener("DOMContentLoaded", cargarMascotas);
+    // Función para regresar según rol
+    function regresar() {
+      const usuario = sessionStorage.getItem('usuario');
+      if (!usuario) {
+        alert('No hay usuario logueado.');
+        window.location.href = '/login';
+        return;
+      }
+      const { rol } = JSON.parse(usuario);
+      switch (rol) {
+        case 'Administrador':
+          window.location.href = 'historiales_read.html';
+          break;
+        case 'Recepcionista':
+          window.location.href = 'historiales_readr.html';
+          break;
+        case 'Veterinario':
+          window.location.href = 'historiales_readv.html';
+          break;
+        case 'Contador':
+          window.location.href = 'historiales_readc.html';
+          break;
+        default:
+          alert('Rol no reconocido, regresando al menú principal');
+          window.location.href = '/admin';
+      }
+    }
+
+    // Controlar envío del formulario con fetch y usar regresar()
+    document.getElementById('formularioHistorial').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const res = await fetch('/historial_medico_create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          alert('Historial guardado correctamente');
+          regresar();
+        } else {
+          alert('Error al guardar el historial');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error al conectar con el servidor');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', cargarMascotas);
   </script>
 
-  <script src="../Js/auth.js" defer></script>
+  <script src="../../js/auth.js" defer></script>
 </body>
 
 </html>

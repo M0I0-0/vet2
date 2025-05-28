@@ -99,7 +99,7 @@
 
              function eliminarProveedor(id) {
                 if (confirm("¿Seguro que deseas eliminar este proveedor?")) {
-                    fetch(`${API_URL}/${id}`, {
+                    fetch(`http://localhost:3000/proveedores/${id}`, {
                         method: 'DELETE'
                     })
                     .then(res => res.json())
@@ -124,7 +124,7 @@
             document.addEventListener("DOMContentLoaded", cargarProveedores);
         </script>
 
-        <script src="../Js/auth.js" defer></script>
+  <script src="../../js/auth.js" defer></script>
     </div>
 </body>
 

@@ -2,39 +2,95 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Nuevo proveedor</title>
-    <link rel="stylesheet" href="../../css/form.css">
+  <meta charset="UTF-8" />
+  <title>Nuevo proveedor</title>
+  <link rel="stylesheet" href="../../css/form.css" />
 </head>
 
 <body>
-    <div class="cont">
-        <h1>Nuevo proveedor</h1>
-        <form action="/proveedores_create" method="post">
-            <div class="input-container">
+  <div class="cont">
+    <h1>Nuevo proveedor</h1>
+    <form id="formularioProveedor">
 
-                <label>Nombre:</label>
-                <input type="text" name="nombre" required><br>
+      <div class="input-container">
 
-                <label>Contacto:</label>
-                <input type="text" name="contacto" required><br>
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required /><br />
 
-                <label>Telefono:</label>
-                <input type="text" name="telefono" required><br>
+        <label>Contacto:</label>
+        <input type="text" name="contacto" required /><br />
 
-                <label>Correo:</label>
-                <input type="email" name="correo" required><br>
+        <label>Teléfono:</label>
+        <input type="text" name="telefono" required /><br />
 
-                <label>Direccion:</label>
-                <input type="text" name="direccion" required><br>
-            </div>
-            <div class="button-container">
-                <input type="submit" value="Guardar">
-                <a href="proveedores_read.html">Regresar</a>
-            </div>
-        </form>
-    </div>
-    <script src="../Js/auth.js" defer></script>
+        <label>Correo:</label>
+        <input type="email" name="correo" required /><br />
+
+        <label>Dirección:</label>
+        <input type="text" name="direccion" required /><br />
+      </div>
+      <div class="button-container">
+        <input type="submit" value="Guardar" />
+        <a href="#" onclick="regresar()">Regresar</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function regresar() {
+      const usuario = sessionStorage.getItem('usuario');
+      if (!usuario) {
+        alert('No hay usuario logueado.');
+        window.location.href = '/login';
+        return;
+      }
+      const { rol } = JSON.parse(usuario);
+      switch (rol) {
+        case 'Administrador':
+          window.location.href = 'proveedores_read.html';
+          break;
+        case 'Recepcionista':
+          window.location.href = 'proveedores_readr.html';
+          break;
+        case 'Veterinario':
+          window.location.href = 'proveedores_readv.html';
+          break;
+        case 'Contador':
+          window.location.href = 'proveedores_readc.html';
+          break;
+        default:
+          alert('Rol no reconocido, regresando al menú principal');
+          window.location.href = '/admin';
+      }
+    }
+
+    document.getElementById('formularioProveedor').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const res = await fetch('/proveedores_create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          alert('Proveedor guardado correctamente');
+          regresar();
+        } else {
+          alert('Error al guardar el proveedor');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error al conectar con el servidor');
+      }
+    });
+  </script>
+
+  <script src="../../js/auth.js" defer></script>
 </body>
 
 </html>

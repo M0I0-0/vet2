@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Nueva cita</title>
-  <link rel="stylesheet" href="../../css/form.css">
+  <link rel="stylesheet" href="../../css/form.css" />
 </head>
 
 <body>
   <div class="cont">
     <h1>Nueva cita</h1>
 
-    <!-- ✅ CORRECTO: apuntamos a /cita_create -->
-    <form action="/cita_create" method="post">
-
+    <form id="formularioCita">
       <div class="input-container">
         <label>Estado:</label>
         <select name="estado" required>
@@ -20,86 +19,141 @@
           <option value="Pendiente">Pendiente</option>
           <option value="Completada">Completada</option>
           <option value="Cancelada">Cancelada</option>
-        </select><br>
+        </select><br />
 
         <label>Fecha:</label>
-        <input type="date" name="fecha" required><br>
+        <input type="date" name="fecha" required /><br />
 
         <label>Hora:</label>
-        <input type="time" name="hora" required><br>
+        <input type="time" name="hora" required /><br />
 
-        <!-- ✅ IMPORTANTE: el name debe ser id_mascota -->
         <label>Mascota:</label>
         <select name="id_mascota" id="mascotaSelect" required>
           <option value="">Selecciona una mascota</option>
-        </select><br>
+        </select><br />
 
-        <!-- ✅ IMPORTANTE: el name debe ser id_veterinario -->
         <label>Veterinario:</label>
         <select name="id_veterinario" id="veterinarioSelect" required>
           <option value="">Selecciona un veterinario</option>
-        </select><br>
+        </select><br />
 
         <label>Motivo:</label>
-        <input type="text" name="motivo" required>
+        <input type="text" name="motivo" required />
       </div>
 
       <div class="button-container">
-        <input type="submit" value="Guardar">
-        <a href="citas_read.html">Regresar</a>
+        <input type="submit" value="Guardar" />
+        <a href="#" onclick="regresar()">Regresar</a>
       </div>
-
     </form>
   </div>
 
-  <!-- ✅ Script JS para cargar mascotas y veterinarios -->
   <script>
     // Cargar mascotas desde /mascotas
     function cargarMascotas() {
       fetch('/mascotas')
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           const select = document.getElementById('mascotaSelect');
-          data.forEach(mascota => {
+          data.forEach((mascota) => {
             const option = document.createElement('option');
             option.value = mascota.id_mascota;
             option.textContent = `${mascota.nombre_mascota} (${mascota.nombre_cliente})`;
             select.appendChild(option);
           });
         })
-        .catch(error => {
-          console.error("Error al cargar mascotas:", error);
-          alert("No se pudieron cargar las mascotas.");
+        .catch((error) => {
+          console.error('Error al cargar mascotas:', error);
+          alert('No se pudieron cargar las mascotas.');
         });
     }
 
     // Cargar veterinarios desde /usuarios y filtrar
     function cargarVeterinarios() {
       fetch('/usuarios')
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           const select = document.getElementById('veterinarioSelect');
           data
-            .filter(usuario => usuario.rol === 'Veterinario')
-            .forEach(vet => {
+            .filter((usuario) => usuario.rol === 'Veterinario')
+            .forEach((vet) => {
               const option = document.createElement('option');
               option.value = vet.id_usuario;
               option.textContent = vet.nombre;
               select.appendChild(option);
             });
         })
-        .catch(error => {
-          console.error("Error al cargar veterinarios:", error);
-          alert("No se pudieron cargar los veterinarios.");
+        .catch((error) => {
+          console.error('Error al cargar veterinarios:', error);
+          alert('No se pudieron cargar los veterinarios.');
         });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    // Función para regresar según rol
+    function regresar() {
+      const usuario = sessionStorage.getItem('usuario');
+      if (!usuario) {
+        alert('No hay usuario logueado.');
+        window.location.href = '/login';
+        return;
+      }
+      const { rol } = JSON.parse(usuario);
+      switch (rol) {
+        case 'Administrador':
+          window.location.href = 'citas_read.html';
+          break;
+        case 'Recepcionista':
+          window.location.href = 'citas_readr.html';
+          break;
+        case 'Veterinario':
+          window.location.href = 'citas_readv.html';
+          break;
+        case 'Contador':
+          window.location.href = 'citas_readc.html';
+          break;
+        default:
+          alert('Rol no reconocido, regresando al menú principal');
+          window.location.href = '/admin';
+      }
+    }
+
+    // Envío del formulario con fetch y uso de regresar() si se guarda bien
+    document.getElementById('formularioCita').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const res = await fetch('/cita_create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (res.ok) {
+          alert('Cita guardada correctamente');
+          regresar();
+        } else {
+          alert('Error al guardar la cita');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error al conectar con el servidor');
+      }
+    });
+
+    // Cargar datos cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', () => {
       cargarMascotas();
       cargarVeterinarios();
     });
   </script>
 
-  <script src="../Js/auth.js" defer></script>
+    <script src="../../js/auth.js" defer></script>
+
 </body>
+
 </html>

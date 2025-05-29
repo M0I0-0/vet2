@@ -103,19 +103,19 @@
                     fetch(`${API_URL}/${id}`, {
                         method: 'DELETE'
                     })
-                    .then(res => res.json())
-                    .then(() => {
-                        alert("Usuario eliminado exitosamente.");
-                        cargarUsuarios();
-                    })
-                    .catch(error => console.error("Error al eliminar usuario:", error));
+                        .then(res => res.json())
+                        .then(() => {
+                            alert("Usuario eliminado exitosamente.");
+                            cargarUsuarios();
+                        })
+                        .catch(error => console.error("Error al eliminar usuario:", error));
                 }
             }
 
             document.addEventListener("DOMContentLoaded", cargarUsuarios);
         </script>
 
-  <script src="../../js/auth.js" defer></script>
+        <script src="../../js/auth.js" defer></script>
     </div>
 </body>
 

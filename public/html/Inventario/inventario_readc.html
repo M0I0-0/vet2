@@ -98,14 +98,15 @@
             }
 
             function buscarInventario() {
-                const filtro = document.getElementById('searchInput').value.toLowerCase();
-                const filtrados = inventarios.filter(i =>
-                    i.nombre_producto.toLowerCase().includes(filtro) ||
-                    i.categoria_nombre.toLowerCase().includes(filtro) ||
-                    i.descripcion.toLowerCase().includes(filtro)
-                );
-                mostrarInventarios(filtrados);
-            }
+    const filtro = document.getElementById('searchInput').value.toLowerCase();
+    const filtrados = inventarios.filter(i =>
+        i.nombre_producto.toLowerCase().includes(filtro) ||
+        i.nombre_categoria.toLowerCase().includes(filtro) || // ← corregido
+        i.descripcion.toLowerCase().includes(filtro)
+    );
+    mostrarInventarios(filtrados);
+}
+
 
             function eliminarInventario(id) {
                 if (confirm('¿Seguro que deseas eliminar este inventario?')) {

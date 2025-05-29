@@ -53,7 +53,7 @@
             <a href="/recp" class="menu-principal">Menu</a>
         </div>
 
-         <script>
+        <script>
             const API_URL = 'http://localhost:3000/historiales';
             let historiales = [];
 
@@ -86,7 +86,9 @@
 
             function buscarHistorial() {
                 const filtro = document.getElementById("searchInput").value.toLowerCase();
-                const resultados = historiales.filter(h => h.mascota.toLowerCase().includes(filtro));
+                const resultados = historiales.filter(h =>
+                    (h.nombre_mascota || '').toLowerCase().includes(filtro)
+                );
                 mostrarHistorial(resultados);
             }
 
@@ -95,18 +97,18 @@
                     fetch(`${API_URL}/${id}`, {
                         method: 'DELETE'
                     })
-                    .then(res => res.json())
-                    .then(() => {
-                        alert("Historial eliminado correctamente.");
-                        cargarHistorial();
-                    })
-                    .catch(error => console.error("Error al eliminar historial:", error));
+                        .then(res => res.json())
+                        .then(() => {
+                            alert("Historial eliminado correctamente.");
+                            cargarHistorial();
+                        })
+                        .catch(error => console.error("Error al eliminar historial:", error));
                 }
             }
 
             document.addEventListener("DOMContentLoaded", cargarHistorial);
         </script>
-  <script src="../../js/auth.js" defer></script>
+        <script src="../../js/auth.js" defer></script>
     </div>
 </body>
 

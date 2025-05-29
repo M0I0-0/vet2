@@ -57,7 +57,7 @@
             <a href="/recp" class="menu-principal">Menu</a>
         </div>
 
-         <script>
+        <script>
             const API_URL = 'http://localhost:3000/inventario';
             let inventarios = [];
 
@@ -99,7 +99,7 @@
                 const filtro = document.getElementById('searchInput').value.toLowerCase();
                 const filtrados = inventarios.filter(i =>
                     i.nombre_producto.toLowerCase().includes(filtro) ||
-                    i.categoria_nombre.toLowerCase().includes(filtro) ||
+                    i.nombre_categoria.toLowerCase().includes(filtro) || // ← corregido
                     i.descripcion.toLowerCase().includes(filtro)
                 );
                 mostrarInventarios(filtrados);
@@ -110,22 +110,22 @@
                     fetch(`${API_URL}/${id}`, {
                         method: 'DELETE'
                     })
-                    .then(res => {
-                        if (res.ok) {
-                            alert('Inventario eliminado correctamente');
-                            cargarinventario();
-                        } else {
-                            alert('Error al eliminar inventario');
-                        }
-                    })
-                    .catch(err => console.error('Error al eliminar:', err));
+                        .then(res => {
+                            if (res.ok) {
+                                alert('Inventario eliminado correctamente');
+                                cargarinventario();
+                            } else {
+                                alert('Error al eliminar inventario');
+                            }
+                        })
+                        .catch(err => console.error('Error al eliminar:', err));
                 }
             }
 
             document.addEventListener('DOMContentLoaded', cargarinventario);
         </script>
 
-  <script src="../../js/auth.js" defer></script>
+        <script src="../../js/auth.js" defer></script>
     </div>
 </body>
 

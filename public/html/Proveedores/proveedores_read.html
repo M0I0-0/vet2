@@ -64,7 +64,7 @@
             let proveedores = [];
 
             function cargarProveedores() {
-                fetch('http://localhost:3000/proveedores') // <-- Ruta del backend en Node.js
+                fetch('https://vet2.up.railway.app/proveedores') // <-- Ruta del backend en Node.js
                     .then(response => {
                         if (!response.ok) throw new Error("Error al obtener proveedores");
                         return response.json();

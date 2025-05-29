@@ -1,84 +1,124 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Editar cita</title>
-    <link rel="stylesheet" href="../../css/form.css">
-
+  <meta charset="UTF-8">
+  <title>Editar cita</title>
+  <link rel="stylesheet" href="../../css/form.css">
 </head>
 
 <body>
-    <div class="cont">
-        <h1>Editar cita</h1>
-        <form action="citas_update.php" method="post">
-            <input type="hidden" name="id_cita" id="cita_id">
+  <div class="cont">
+    <h1>Editar cita</h1>
+    <form action="/citas_update" method="post">
+      <input type="hidden" name="id_cita" id="cita_id">
 
-            <div class="input-container">
-                <label>Estado:</label>
-                <select name="estado" id="cita_estado" required>
-                    <option value="">Selecciona un estado</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Completada">Completada</option>
-                    <option value="Cancelada">Cancelada</option>
-                </select><br>
+      <div class="input-container">
+        <label>Estado:</label>
+        <select name="estado" id="cita_estado" required>
+          <option value="">Selecciona un estado</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Completada">Completada</option>
+          <option value="Cancelada">Cancelada</option>
+        </select><br>
 
-                <label>Fecha:</label>
-                <input type="date" name="fecha" id="cita_fecha" required><br>
+        <label>Fecha:</label>
+        <input type="date" name="fecha" id="cita_fecha" required><br>
 
-                <label>Hora:</label>
-                <input type="time" name="hora" id="cita_hora" required><br>
+        <label>Hora:</label>
+        <input type="time" name="hora" id="cita_hora" required><br>
 
-                <label>Mascota:</label>
-                <select name="mascota" id="mascotaSelect" required>
-                    <option value="">Selecciona una mascota</option>
-                </select><br>
+        <label>Mascota:</label>
+        <select name="id_mascota" id="mascotaSelect" required>
+          <option value="">Selecciona una mascota</option>
+        </select><br>
 
-                <label>Veterinario:</label>
-                <select name="veterinario" id="veterinarioSelect" required>
-                    <option value="">Selecciona un veterinario</option>
-                </select><br>
+        <label>Veterinario:</label>
+        <select name="id_veterinario" id="veterinarioSelect" required>
+          <option value="">Selecciona un veterinario</option>
+        </select><br>
 
-                <label>Motivo:</label>
-                <input type="text" name="motivo" id="cita_motivo" required><br>
+        <label>Motivo:</label>
+        <input type="text" name="motivo" id="cita_motivo" required><br>
+      </div>
 
-            </div>
-            <div class="button-container">
-                <input type="submit" value="Guardar">
-                <a href="citas_read.html">Regresar</a>
-            </div>
-        </form>
-    </div>
+      <div class="button-container">
+        <input type="submit" value="Guardar">
+        <a href="citas_read.html">Regresar</a>
+      </div>
+    </form>
+  </div>
 
-    <script>
-  const params = new URLSearchParams(window.location.search);
-  const citaID = params.get('id');
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const citaID = params.get('id');
 
-  if (citaID) {
-    fetch('/citas/' + citaID)
-      .then(response => {
-        if (!response.ok) throw new Error('Cita no encontrada');
-        return response.json();
-      })
-      .then(data => {
-        document.getElementById('cita_id').value = data.id_cita;
-        document.getElementById('cita_fecha').value = data.fecha;
-        document.getElementById('cita_hora').value = data.hora;
-        document.getElementById('cita_id_mascota').value = data.id_mascota;
-        document.getElementById('cita_id_veterinario').value = data.id_veterinario;
-        document.getElementById('cita_motivo').value = data.motivo;
-        document.getElementById('cita_estado').value = data.estado;
-      })
-      .catch(error => {
-        console.error("Error al obtener datos de la cita:", error);
-        alert("No se pudieron cargar los datos de la cita.");
-      });
-  } else {
-    alert("ID de cita no proporcionado.");
-  }
-</script>
+    if (citaID) {
+      fetch('/citas/' + citaID)
+        .then(response => {
+          if (!response.ok) throw new Error('Cita no encontrada');
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('cita_id').value = data.id_cita;
+          document.getElementById('cita_fecha').value = data.fecha;
+          document.getElementById('cita_hora').value = data.hora;
+          document.getElementById('cita_motivo').value = data.motivo;
+          document.getElementById('cita_estado').value = data.estado;
+
+          cargarMascotas(data.id_mascota);
+          cargarVeterinarios(data.id_veterinario);
+        })
+        .catch(error => {
+          console.error("Error al obtener datos de la cita:", error);
+          alert("No se pudieron cargar los datos de la cita.");
+        });
+    } else {
+      alert("ID de cita no proporcionado.");
+    }
+
+    // Cargar mascotas
+    function cargarMascotas(selectedId) {
+      fetch('/mascotas')
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById('mascotaSelect');
+          select.innerHTML = '<option value="">Selecciona una mascota</option>';
+          data.forEach(mascota => {
+            const option = document.createElement('option');
+            option.value = mascota.id_mascota;
+            option.textContent = `${mascota.nombre_mascota} (${mascota.nombre_cliente})`;
+            select.appendChild(option);
+          });
+          if (selectedId) select.value = selectedId;
+        })
+        .catch(error => {
+          console.error("Error al cargar mascotas:", error);
+        });
+    }
+
+    // Cargar veterinarios (usuarios con rol 'veterinario')
+    function cargarVeterinarios(selectedId) {
+      fetch('/usuarios')
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById('veterinarioSelect');
+          select.innerHTML = '<option value="">Selecciona un veterinario</option>';
+          data
+            .filter(usuario => usuario.rol === 'Veterinario')
+            .forEach(vet => {
+              const option = document.createElement('option');
+              option.value = vet.id_usuario;
+              option.textContent = vet.nombre;
+              select.appendChild(option);
+            });
+          if (selectedId) select.value = selectedId;
+        })
+        .catch(error => {
+          console.error("Error al cargar veterinarios:", error);
+        });
+    }
+  </script>
 
   <script src="../../js/auth.js" defer></script>
 </body>
-
 </html>
